@@ -5,12 +5,16 @@
  * @version 1.6.3
  * @since   1.0.0
  * @author  Tyche Softwares
+ * @package cpgw
  */
 
 add_action( 'plugins_loaded', 'init_wc_gateway_alg_custom_class' );
 
 if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 
+	/**
+	 * Load the class for creating custom gateway once plugins are loaded.
+	 */
 	function init_wc_gateway_alg_custom_class() {
 
 		if ( class_exists( 'WC_Payment_Gateway' ) && ! class_exists( 'WC_Gateway_Alg_Custom_Template' ) ) {
@@ -29,7 +33,7 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 				 * @version 1.1.0
 				 * @since   1.0.0
 				 */
-				function __construct() {
+				public function __construct() {
 					$this->is_wc_version_below_3 = version_compare( get_option( 'woocommerce_version', null ), '3.0.0', '<' );
 					return true;
 				}
@@ -42,11 +46,11 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 				 * @todo    [dev] check if we really need `is_admin()` for `$shipping_methods`
 				 * @todo    [dev] maybe redo `'yes' !== get_option( 'alg_wc_cpg_load_shipping_method_instances', 'yes' )`
 				 */
-				function init_form_fields() {
-					// Prepare shipping methods
-					$shipping_methods = array();
+				public function init_form_fields() {
+					// Prepare shipping methods.
+					$shipping_methods                  = array();
 					$do_load_shipping_method_instances = get_option( 'alg_wc_cpg_load_shipping_method_instances', 'yes' );
-					if ( 'disable' != $do_load_shipping_method_instances && is_admin() ) {
+					if ( 'disable' !== $do_load_shipping_method_instances && is_admin() ) {
 						$data_store = WC_Data_Store::load( 'shipping-zone' );
 						$raw_zones  = $data_store->get_zones();
 						foreach ( $raw_zones as $raw_zone ) {
@@ -55,9 +59,12 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 						$zones[] = new WC_Shipping_Zone( 0 );
 						foreach ( WC()->shipping()->load_shipping_methods() as $method ) {
 							$shipping_methods[ $method->get_method_title() ] = array();
-							// Translators: %1$s shipping method name.
-							$shipping_methods[ $method->get_method_title() ][ $method->id ] = sprintf( __( 'Any &quot;%1$s&quot; method', 'woocommerce' ),
-								$method->get_method_title() );
+
+							$shipping_methods[ $method->get_method_title() ][ $method->id ] = sprintf(
+								// Translators: %1$s shipping method name.
+								__( 'Any &quot;%1$s&quot; method', 'woocommerce' ),
+								$method->get_method_title()
+							);
 							foreach ( $zones as $zone ) {
 								$shipping_method_instances = $zone->get_shipping_methods();
 								$shipping_method_instances = ( 'yes' === $do_load_shipping_method_instances ? $zone->get_shipping_methods() : array() );
@@ -66,22 +73,31 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 										continue;
 									}
 									$option_id = $shipping_method_instance->get_rate_id();
-									// Translators: %1$s shipping method title, %2$s shipping method id.
-									$option_instance_title = sprintf( __( '%1$s (#%2$s)', 'woocommerce' ),
-										$shipping_method_instance->get_title(), $shipping_method_instance_id );
-									// Translators: %1$s zone name, %2$s shipping method instance name.
-									$option_title = sprintf( __( '%1$s &ndash; %2$s', 'woocommerce' ), $zone->get_id() ? $zone->get_zone_name() :
-										__( 'Other locations', 'woocommerce' ), $option_instance_title );
+
+									$option_instance_title = sprintf(
+										// Translators: %1$s shipping method title, %2$s shipping method id.
+										__( '%1$s (#%2$s)', 'woocommerce' ),
+										$shipping_method_instance->get_title(),
+										$shipping_method_instance_id
+									);
+
+									$option_title = sprintf(
+										// Translators: %1$s zone name, %2$s shipping method instance name.
+										__( '%1$s &ndash; %2$s', 'woocommerce' ),
+										$zone->get_id() ? $zone->get_zone_name() :
+										__( 'Other locations', 'woocommerce' ),
+										$option_instance_title
+									);
 									$shipping_methods[ $method->get_method_title() ][ $option_id ] = $option_title;
 								}
 							}
 						}
 					}
-					// Prepare icon description
+					// Prepare icon description.
 					$icon_desc = ( '' !== ( $icon_url = $this->get_option( 'icon', '' ) ) ?
 						'<img src="' . $icon_url . '" alt="' . $this->title . '" title="' . $this->title . '" />' : '' );
-					// Form fields
-					$this->form_fields = require( 'settings/class-wc-gateway-alg-custom-form-fields.php' );
+					// Form fields.
+					$this->form_fields = require 'settings/class-wc-gateway-alg-custom-form-fields.php';
 				}
 
 				/**
@@ -92,10 +108,10 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 				 * @return  bool
 				 * @todo    [dev] recheck enable_for_virtual part of the code
 				 */
-				function is_available() {
+				public function is_available() {
 					$order = null;
 
-					// Check min amount
+					// Check min amount.
 					$min_amount = apply_filters( 'alg_wc_custom_payment_gateways_values', 0, 'min_amount', $this );
 					if ( $min_amount > 0 && isset( WC()->cart->total ) && '' != WC()->cart->total && isset( WC()->cart->fee_total ) ) {
 						$total_excluding_fees = WC()->cart->total - WC()->cart->fee_total;
@@ -104,7 +120,7 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 						}
 					}
 
-					// Check if is virtual
+					// Check if is virtual.
 					if ( ! $this->enable_for_virtual ) {
 						if ( WC()->cart && ! WC()->cart->needs_shipping() ) {
 							return false;
@@ -114,7 +130,7 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 							$order    = wc_get_order( $order_id );
 							// Test if order needs shipping.
 							$needs_shipping = false;
-							if ( 0 < sizeof( $order->get_items() ) ) {
+							if ( 0 < count( $order->get_items() ) ) {
 								foreach ( $order->get_items() as $item ) {
 									$_product = $order->get_product_from_item( $item );
 
@@ -133,18 +149,18 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 
 					// Only apply if all packages are being shipped via ...
 					if ( ! empty( $this->enable_for_methods ) ) {
-						$session_object = WC()->session;
+						$session_object                  = WC()->session;
 						$chosen_shipping_methods_session = ( is_object( $session_object ) ) ? $session_object->get( 'chosen_shipping_methods' ) : null;
-						$chosen_shipping_methods = ( isset( $chosen_shipping_methods_session ) ) ? array_unique( $chosen_shipping_methods_session ) : array();
-						$check_method = false;
+						$chosen_shipping_methods         = ( isset( $chosen_shipping_methods_session ) ) ? array_unique( $chosen_shipping_methods_session ) : array();
+						$check_method                    = false;
 						if ( is_object( $order ) ) {
 							$shipping_method = ( $this->is_wc_version_below_3 ? $order->shipping_method : $order->get_shipping_method() );
 							if ( $shipping_method ) {
 								$check_method = $shipping_method;
 							}
-						} elseif ( empty( $chosen_shipping_methods ) || sizeof( $chosen_shipping_methods ) > 1 ) {
+						} elseif ( empty( $chosen_shipping_methods ) || count( $chosen_shipping_methods ) > 1 ) {
 							$check_method = false;
-						} elseif ( sizeof( $chosen_shipping_methods ) == 1 ) {
+						} elseif ( count( $chosen_shipping_methods ) === 1 ) {
 							$check_method = $chosen_shipping_methods[0];
 						}
 						if ( ! $check_method ) {
@@ -177,7 +193,7 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 				 * @version 1.0.0
 				 * @since   1.0.0
 				 */
-				function thankyou_page() {
+				public function thankyou_page() {
 					if ( $this->instructions ) {
 						echo do_shortcode( wpautop( wptexturize( $this->instructions ) ) );
 					}
@@ -189,11 +205,11 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 				 * @version 1.1.0
 				 * @since   1.0.0
 				 * @access  public
-				 * @param   WC_Order $order
-				 * @param   bool $sent_to_admin
-				 * @param   bool $plain_text
+				 * @param   WC_Order $order Order Object.
+				 * @param   bool     $sent_to_admin Send to Admin.
+				 * @param   bool     $plain_text Plain Text.
 				 */
-				function email_instructions( $order, $sent_to_admin, $plain_text = false ) {
+				public function email_instructions( $order, $sent_to_admin, $plain_text = false ) {
 					if ( $this->instructions_in_email && ! $sent_to_admin && $this->id === ( $this->is_wc_version_below_3 ? $order->payment_method : $order->get_payment_method() ) && $this->default_order_status === ( $this->is_wc_version_below_3 ? $order->status : $order->get_status() ) ) {
 						echo do_shortcode( wpautop( wptexturize( $this->instructions_in_email ) ) . PHP_EOL );
 					}
@@ -204,19 +220,19 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 				 *
 				 * @version 1.6.3
 				 * @since   1.0.0
-				 * @param   int $order_id
+				 * @param   int $order_id Order ID.
 				 * @return  array
 				 */
-				function process_payment( $order_id ) {
+				public function process_payment( $order_id ) {
 
 					$order = wc_get_order( $order_id );
 
-					// Mark as default order status
+					// Mark as default order status.
 					$statuses = alg_wc_custom_payment_gateways_get_order_statuses();
-					$note = isset( $statuses[ $this->default_order_status ] ) ? $statuses[ $this->default_order_status ] : '';
-					$order->update_status( $this->default_order_status, $note ); // e.g. ( 'on-hold', __( 'Awaiting payment', 'woocommerce' ) )
+					$note     = isset( $statuses[ $this->default_order_status ] ) ? $statuses[ $this->default_order_status ] : '';
+					$order->update_status( $this->default_order_status, $note ); // e.g. ( 'on-hold', __( 'Awaiting payment', 'woocommerce' ) ).
 
-					// Emails
+					// Emails.
 					if ( 'yes' === $this->send_email_to_admin || 'yes' === $this->send_email_to_customer ) {
 						$woocommerce_mailer = WC()->mailer();
 						if ( 'yes' === $this->send_email_to_admin ) {
@@ -227,37 +243,40 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 						}
 					}
 
-					// Reduce stock levels
+					// Reduce stock levels.
 					$result_reduce_order_stock = ( $this->is_wc_version_below_3 ? $order->reduce_order_stock() : wc_reduce_stock_levels( $order->get_id() ) );
 
-					// Remove cart
+					// Remove cart.
 					WC()->cart->empty_cart();
 
-					// Return thankyou redirect
+					// Return thankyou redirect.
 					return array(
 						'result'   => 'success',
 						'redirect' => ( '' == $this->custom_return_url ) ?
 							$this->get_return_url( $order ) :
-							apply_filters( 'alg_wc_custom_payment_gateway_custom_return_url',
+							apply_filters(
+								'alg_wc_custom_payment_gateway_custom_return_url',
 								str_replace(
 									array( '%order_id%', '%order_key%', '%order_total%' ),
 									array( $order->get_id(), $order->get_order_key(), $order->get_total() ),
 									htmlspecialchars_decode( $this->custom_return_url )
 								),
-								$order )
+								$order
+							),
 					);
 				}
 
 				/**
-				 * get_fees.
+				 * Get fees.
 				 *
 				 * @version 1.6.0
 				 * @since   1.6.0
 				 */
-				function get_fees() {
+				public function get_fees() {
 					$fees = array();
-					for ( $i = 1; $i <= apply_filters( 'alg_wc_custom_payment_gateways_values', 1, 'total_fees', $this ); $i++ ) {
-						if ( 'yes' === $this->get_option( 'fee_enabled_' . $i, 'yes' ) && ( $fee_amount = $this->get_option( 'fee_amount_' . $i, '' ) ) ) {
+					for ( $i = 1; $i <= apply_filters( 'alg_wc_custom_payment_gateways_values', 1, 'total_fees', $this ); $i++ ) { //phpcs:ignore
+						$fee_amount = $this->get_option( 'fee_amount_' . $i, '' );
+						if ( 'yes' === $this->get_option( 'fee_enabled_' . $i, 'yes' ) && $fee_amount ) {
 							$fees[] = array(
 								'name'       => $this->get_option( 'fee_name_' . $i, '' ),
 								'amount'     => $fee_amount,
@@ -275,7 +294,7 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 				}
 
 				/**
-				 * get_input_fields.
+				 * Get input fields.
 				 *
 				 * @version 1.5.0
 				 * @since   1.3.0
@@ -285,11 +304,12 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 				 * @todo    [dev] more options for types (e.g. for `min`, `max`, `step` for `number` etc.)
 				 * @todo    [dev] customizable template (e.g. `fieldset` etc.) and position (i.e. before or after the description)
 				 */
-				function get_input_fields() {
-					$html = '';
+				public function get_input_fields() {
+					$html         = '';
 					$input_fields = array();
-					for ( $i = 1; $i <= apply_filters( 'alg_wc_custom_payment_gateways_values', 1, 'total_input_fields', $this ); $i++ ) {
-						if ( '' !== ( $title = $this->get_option( 'input_fields_title_' . $i, '' ) ) ) {
+					for ( $i = 1; $i <= apply_filters( 'alg_wc_custom_payment_gateways_values', 1, 'total_input_fields', $this ); $i++ ) { //phpcs:ignore
+						$title = $this->get_option( 'input_fields_title_' . $i, '' );
+						if ( '' !== $title ) {
 							$input_fields[] = array(
 								'title'       => $title,
 								'required'    => ( 'yes' === $this->get_option( 'input_fields_required_' . $i, 'no' ) ),
@@ -311,7 +331,7 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 						$html .= '<span class="woocommerce-input-wrapper">';
 						switch ( $input_field['type'] ) {
 							case 'select':
-								$html .= '<select' .
+								$html  .= '<select' .
 									' name="alg_wc_cpg_input_fields[' . $this->id . '][' . $input_field['title'] . ']"' .
 									' id="alg_wc_cpg_input_fields_' . $this->id . '_' . sanitize_title( $input_field['title'] ) . '"' .
 									' class="' . $input_field['class'] . '"' .
@@ -330,14 +350,14 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 									' class="' . $input_field['class'] . '"' .
 								'>' . $input_field['value'] . '</textarea>';
 								break;
-							default: // e.g. `text`
+							default: // e.g. `text`.
 								$html .= '<input' .
 									' type="' . $input_field['type'] . '"' .
 									' name="alg_wc_cpg_input_fields[' . $this->id . '][' . $input_field['title'] . ']"' .
 									' id="alg_wc_cpg_input_fields_' . $this->id . '_' . sanitize_title( $input_field['title'] ) . '"' .
 									' placeholder="' . $input_field['placeholder'] . '"' .
 									' class="' . $input_field['class'] . '"' .
-									( 'checkbox' != $input_field['type'] ? ' value="' . $input_field['value'] . '"' : '' ) .
+									( 'checkbox' !== $input_field['type'] ? ' value="' . $input_field['value'] . '"' : '' ) .
 								'>';
 						}
 						$html .= '</span>';
@@ -356,50 +376,53 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 				}
 
 				/**
-				 * init.
+				 * Init.
 				 *
+				 * @param string $id_count ID Count.
 				 * @version 1.3.0
 				 * @since   1.0.0
 				 */
-				function init( $id_count ) {
-					$this->id                       = 'alg_custom_gateway_' . $id_count;
-					$this->has_fields               = false;
-					$this->method_title             = get_option( 'alg_wc_custom_payment_gateways_admin_title_' . $id_count, __( 'Custom Gateway', 'custom-payment-gateways-woocommerce' ) . ' #' . $id_count );
-					$this->method_description       = __( 'Custom Payment Gateway', 'custom-payment-gateways-woocommerce' ) . ' #' . $id_count;
-					$this->id_count                 = $id_count;
-					// Load the settings
+				public function init( $id_count ) {
+					$this->id                 = 'alg_custom_gateway_' . $id_count;
+					$this->has_fields         = false;
+					$this->method_title       = get_option( 'alg_wc_custom_payment_gateways_admin_title_' . $id_count, __( 'Custom Gateway', 'custom-payment-gateways-woocommerce' ) . ' #' . $id_count );
+					$this->method_description = __( 'Custom Payment Gateway', 'custom-payment-gateways-woocommerce' ) . ' #' . $id_count;
+					$this->id_count           = $id_count;
+					// Load the settings.
 					$this->init_form_fields();
 					$this->init_settings();
-					// Define user set variables
-					$this->title                    = $this->get_option( 'title', '' );
-					$this->description              = $this->get_option( 'description', '' ) . $this->get_input_fields();
-					$this->instructions             = $this->get_option( 'instructions', '' );
-					$this->instructions_in_email    = $this->get_option( 'instructions_in_email', '' );
-					$this->icon                     = $this->get_option( 'icon', '' );
-					$this->min_amount               = $this->get_option( 'min_amount', 0 );
-					$this->enable_for_methods       = $this->get_option( 'enable_for_methods', array() );
-					$this->enable_for_virtual       = $this->get_option( 'enable_for_virtual', 'yes' ) === 'yes';
-					$this->default_order_status     = $this->get_option( 'default_order_status', 'pending' );
-					$this->send_email_to_admin      = $this->get_option( 'send_email_to_admin', 'no' );
-					$this->send_email_to_customer   = $this->get_option( 'send_email_to_customer', 'no' );
-					$this->custom_return_url        = $this->get_option( 'custom_return_url', '' );
-					// Actions
+					// Define user set variables.
+					$this->title                  = $this->get_option( 'title', '' );
+					$this->description            = $this->get_option( 'description', '' ) . $this->get_input_fields();
+					$this->instructions           = $this->get_option( 'instructions', '' );
+					$this->instructions_in_email  = $this->get_option( 'instructions_in_email', '' );
+					$this->icon                   = $this->get_option( 'icon', '' );
+					$this->min_amount             = $this->get_option( 'min_amount', 0 );
+					$this->enable_for_methods     = $this->get_option( 'enable_for_methods', array() );
+					$this->enable_for_virtual     = $this->get_option( 'enable_for_virtual', 'yes' ) === 'yes';
+					$this->default_order_status   = $this->get_option( 'default_order_status', 'pending' );
+					$this->send_email_to_admin    = $this->get_option( 'send_email_to_admin', 'no' );
+					$this->send_email_to_customer = $this->get_option( 'send_email_to_customer', 'no' );
+					$this->custom_return_url      = $this->get_option( 'custom_return_url', '' );
+					// Actions.
 					add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
-					add_action( 'woocommerce_thankyou_' . $this->id,                        array( $this, 'thankyou_page' ) );
-					add_action( 'woocommerce_email_before_order_table',                     array( $this, 'email_instructions' ), 10, 3 ); // Customer Emails
+					add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ) );
+					add_action( 'woocommerce_email_before_order_table', array( $this, 'email_instructions' ), 10, 3 ); // Customer Emails.
 				}
 
 			}
 
 			/**
-			 * add_wc_gateway_alg_custom_classes.
+			 * Add WC Gateway Classes.
 			 *
+			 * @param array $methods Gateway Methods.
+			 * @return array
 			 * @version 1.6.0
 			 * @since   1.0.0
 			 */
 			function add_wc_gateway_alg_custom_classes( $methods ) {
 				$_methods = array();
-				for ( $i = 1; $i <= apply_filters( 'alg_wc_custom_payment_gateways_values', 1, 'total_gateways' ); $i++ ) {
+				for ( $i = 1; $i <= apply_filters( 'alg_wc_custom_payment_gateways_values', 1, 'total_gateways' ); $i++ ) { //phpcs:ignore
 					$_methods[ $i ] = new WC_Gateway_Alg_Custom_Template();
 					$_methods[ $i ]->init( $i );
 					$methods[] = $_methods[ $i ];
