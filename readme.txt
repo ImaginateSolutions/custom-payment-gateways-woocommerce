@@ -2,8 +2,8 @@
 Contributors: tychesoftwares, ashokrane, dhruvin
 Tags: woocommerce, custom payment gateways, custom payment gateway, payment gateways, payment gateway
 Requires at least: 4.4
-Tested up to: 5.3
-Stable tag: 1.6.4
+Tested up to: 5.5
+Stable tag: 1.6.5
 License: GNU General Public License v3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -49,6 +49,10 @@ With [Pro version](https://wpfactory.com/item/custom-payment-gateways-woocommerc
 3. Start by visiting plugin settings at "WooCommerce > Settings > Custom Payment Gateways".
 
 == Changelog ==
+
+= 1.6.5 - 18/10/2020
+* Code refactoring as per WPCS standards
+* WC tested up to: 4.6
 
 = 1.6.4 - 12/03/2020 =
 * WC tested up to: 4.0
