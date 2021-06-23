@@ -53,6 +53,7 @@ With [Pro version](https://wpfactory.com/item/custom-payment-gateways-woocommerc
 = 1.6.6 - 23/06/2020 =
 * Fix - Input field was not visible when using WPML.
 * Fix - Title and Description were not translatable.
+* Fix - Stock levels not reducing once an order was placed.
 * WC tested upto 5.4
 
 = 1.6.5 - 18/10/2020 =

@@ -246,6 +246,8 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 					// Reduce stock levels.
 					$result_reduce_order_stock = ( $this->is_wc_version_below_3 ? $order->reduce_order_stock() : wc_reduce_stock_levels( $order->get_id() ) );
 
+					$order->get_data_store()->set_stock_reduced( $order_id, true );
+
 					// Remove cart.
 					WC()->cart->empty_cart();
 
