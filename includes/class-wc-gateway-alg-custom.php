@@ -4,7 +4,7 @@
  *
  * @version 1.6.3
  * @since   1.0.0
- * @author  Tyche Softwares
+ * @author  Imaginate Solutions
  * @package cpgw
  */
 
@@ -393,7 +393,7 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 					$this->init_settings();
 					// Define user set variables.
 					$this->title                  = $this->get_option( 'title', '' );
-					$this->description            = $this->get_option( 'description', '' ) . $this->get_input_fields();
+					$this->description            = $this->get_option( 'description', '' );
 					$this->instructions           = $this->get_option( 'instructions', '' );
 					$this->instructions_in_email  = $this->get_option( 'instructions_in_email', '' );
 					$this->icon                   = $this->get_option( 'icon', '' );
@@ -410,6 +410,24 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 					add_action( 'woocommerce_email_before_order_table', array( $this, 'email_instructions' ), 10, 3 ); // Customer Emails.
 				}
 
+				/**
+				 * If There are no payment fields show the description if set.
+				 * Override this in your gateway if you have some.
+				 */
+				public function payment_fields() {
+					$description = $this->get_description();
+					if ( $description ) {
+						echo wpautop( wptexturize( $description ) ); // @codingStandardsIgnoreLine.
+					}
+
+					if ( '' !== $this->get_input_fields() ) {
+						echo wpautop( wptexturize( $this->get_input_fields() ) ); // @codingStandardsIgnoreLine.
+					}
+
+					if ( $this->supports( 'default_credit_card_form' ) ) {
+						$this->credit_card_form(); // Deprecated, will be removed in a future version.
+					}
+				}
 			}
 
 			/**

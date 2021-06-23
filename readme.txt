@@ -1,9 +1,9 @@
 === Custom Payment Gateways for WooCommerce ===
-Contributors: tychesoftwares, ashokrane, dhruvin
+Contributors: dhruvin, imagisol
 Tags: woocommerce, custom payment gateways, custom payment gateway, payment gateways, payment gateway
 Requires at least: 4.4
-Tested up to: 5.5
-Stable tag: 1.6.5
+Tested up to: 5.7
+Stable tag: 1.6.6
 License: GNU General Public License v3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -50,8 +50,13 @@ With [Pro version](https://wpfactory.com/item/custom-payment-gateways-woocommerc
 
 == Changelog ==
 
-= 1.6.5 - 18/10/2020
-* Code refactoring as per WPCS standards
+= 1.6.6 - 23/06/2020 =
+* Fix - Input field was not visible when using WPML.
+* Fix - Title and Description were not translatable.
+* WC tested upto 5.4
+
+= 1.6.5 - 18/10/2020 =
+* Code refactoring as per WPCS standards.
 * WC tested up to: 4.6
 
 = 1.6.4 - 12/03/2020 =
