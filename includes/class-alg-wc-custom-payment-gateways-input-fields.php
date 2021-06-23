@@ -4,7 +4,7 @@
  *
  * @version 1.6.1
  * @since   1.3.0
- * @author  Tyche Softwares
+ * @author  Imaginate Solutions
  * @package cpgw
  */
 
