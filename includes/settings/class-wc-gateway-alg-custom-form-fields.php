@@ -70,10 +70,24 @@ $fields = array(
 			'alg_wc_custom_payment_gateways_settings',
 			sprintf(
 				'<div style="' . $div_style . '">You will need <a target="_blank" href="%s">Custom Payment Gateways for WooCommerce Pro plugin</a> to use minimum order amount option.</div>',
-				'https://wpfactory.com/item/custom-payment-gateways-woocommerce/'
+				'https://imaginate-solutions.com/downloads/custom-payment-gateways-for-woocommerce/'
 			)
 		),
 		'custom_attributes' => apply_filters( 'alg_wc_custom_payment_gateways_settings', array( 'disabled' => 'disabled' ), 'array_min_amount' ),
+	),
+	'max_amount'             => array(
+		'title'             => __( 'Maximum order amount', 'custom-payment-gateways-woocommerce' ),
+		'type'              => 'number',
+		'desc_tip'          => __( 'If you want to set maximum order amount (excluding fees) to show this gateway on frontend, enter a number here. Set to 0 to disable.', 'custom-payment-gateways-woocommerce' ),
+		'default'           => 0,
+		'description'       => apply_filters(
+			'alg_wc_custom_payment_gateways_settings',
+			sprintf(
+				'<div style="' . $div_style . '">You will need <a target="_blank" href="%s">Custom Payment Gateways for WooCommerce Pro plugin</a> to use minimum order amount option.</div>',
+				'https://imaginate-solutions.com/downloads/custom-payment-gateways-for-woocommerce/'
+			)
+		),
+		'custom_attributes' => apply_filters( 'alg_wc_custom_payment_gateways_settings', array( 'disabled' => 'disabled' ), 'array_max_amount' ),
 	),
 	'enable_for_methods'     => array(
 		'title'             => __( 'Enable for shipping methods', 'woocommerce' ),
@@ -163,7 +177,7 @@ if ( 'yes' === get_option( 'alg_wc_cpg_fees_enabled', 'yes' ) ) {
 					'alg_wc_custom_payment_gateways_settings',
 					sprintf(
 						'<div style="' . $div_style . '">You will need <a target="_blank" href="%s">Custom Payment Gateways for WooCommerce Pro plugin</a> to add more than one fee.</div>',
-						'https://wpfactory.com/item/custom-payment-gateways-woocommerce/'
+						'https://imaginate-solutions.com/downloads/custom-payment-gateways-for-woocommerce/'
 					),
 					'total_number'
 				),
@@ -210,7 +224,6 @@ if ( 'yes' === get_option( 'alg_wc_cpg_fees_enabled', 'yes' ) ) {
 					'default'           => '',
 					'custom_attributes' => array(
 						'step' => '0.00001',
-						'min'  => 0,
 					),
 				),
 				'fee_amount_min_' . $i => array(
@@ -293,7 +306,7 @@ if ( 'yes' === get_option( 'alg_wc_cpg_input_fields_enabled', 'yes' ) ) {
 					'alg_wc_custom_payment_gateways_settings',
 					sprintf(
 						'<div style="' . $div_style . '">You will need <a target="_blank" href="%s">Custom Payment Gateways for WooCommerce Pro plugin</a> to add more than one input field.</div>',
-						'https://wpfactory.com/item/custom-payment-gateways-woocommerce/'
+						'https://imaginate-solutions.com/downloads/custom-payment-gateways-for-woocommerce/'
 					),
 					'total_number'
 				),

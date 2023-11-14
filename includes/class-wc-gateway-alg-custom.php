@@ -28,6 +28,83 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 			class WC_Gateway_Alg_Custom_Template extends WC_Payment_Gateway {
 
 				/**
+				 * Check WC version for Backward compatibility.
+				 *
+				 * @var string
+				 */
+				public $is_wc_version_below_3 = null;
+
+				/**
+				 * The current count of the payment gateway being referenced.
+				 *
+				 * @var string
+				 */
+				public $id_count = null;
+
+				/**
+				 * The instructions for the payment gateway.
+				 *
+				 * @var string
+				 */
+				public $instructions = null;
+
+				/**
+				 * The instructions in email for the payment gateway.
+				 *
+				 * @var string
+				 */
+				public $instructions_in_email = null;
+
+				/**
+				 * The minimum amount needed for payment gateway.
+				 *
+				 * @var int
+				 */
+				public $min_amount = 0;
+
+				/**
+				 * Enable gateway for specific shipping method.
+				 *
+				 * @var string
+				 */
+				public $enable_for_methods = null;
+
+				/**
+				 * Enable for virtual orders or not.
+				 *
+				 * @var string
+				 */
+				public $enable_for_virtual = null;
+
+				/**
+				 * The default order status when payment gateway is used.
+				 *
+				 * @var string
+				 */
+				public $default_order_status = null;
+
+				/**
+				 * Send email to admin.
+				 *
+				 * @var string
+				 */
+				public $send_email_to_admin = null;
+
+				/**
+				 * Send email to customer.
+				 *
+				 * @var string
+				 */
+				public $send_email_to_customer = null;
+
+				/**
+				 * The return url after placing order.
+				 *
+				 * @var string
+				 */
+				public $custom_return_url = null;
+
+				/**
 				 * Constructor.
 				 *
 				 * @version 1.1.0
@@ -113,6 +190,7 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 
 					// Check min amount.
 					$min_amount = apply_filters( 'alg_wc_custom_payment_gateways_values', 0, 'min_amount', $this );
+
 					if ( $min_amount > 0 && isset( WC()->cart->total ) && '' != WC()->cart->total && isset( WC()->cart->fee_total ) ) {
 						$total_excluding_fees = WC()->cart->total - WC()->cart->fee_total;
 						if ( $total_excluding_fees < $min_amount ) {
@@ -195,7 +273,12 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 				 */
 				public function thankyou_page() {
 					if ( $this->instructions ) {
-						echo do_shortcode( wpautop( wptexturize( $this->instructions ) ) );
+						$instructions = $this->instructions;
+
+						if ( function_exists( 'pll__' ) ) {
+							$instructions = pll__( $instructions );
+						}
+						echo do_shortcode( wpautop( wptexturize( $instructions ) ) );
 					}
 				}
 
@@ -211,7 +294,13 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 				 */
 				public function email_instructions( $order, $sent_to_admin, $plain_text = false ) {
 					if ( $this->instructions_in_email && ! $sent_to_admin && $this->id === ( $this->is_wc_version_below_3 ? $order->payment_method : $order->get_payment_method() ) && $this->default_order_status === ( $this->is_wc_version_below_3 ? $order->status : $order->get_status() ) ) {
-						echo do_shortcode( wpautop( wptexturize( $this->instructions_in_email ) ) . PHP_EOL );
+
+						$instructions_email = $this->instructions_in_email;
+
+						if ( function_exists( 'pll__' ) ) {
+							$instructions_email = pll__( $instructions_email );
+						}
+						echo do_shortcode( wpautop( wptexturize( $instructions_email ) ) . PHP_EOL );
 					}
 				}
 

@@ -19,6 +19,10 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Settings_General' ) ) :
 	 */
 	class Alg_WC_Custom_Payment_Gateways_Settings_General extends Alg_WC_Custom_Payment_Gateways_Settings_Section {
 
+		public $id = '';
+
+		public $desc = '';
+
 		/**
 		 * Constructor.
 		 *
@@ -65,7 +69,7 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Settings_General' ) ) :
 						'alg_wc_custom_payment_gateways_settings',
 						sprintf(
 							'<p><div style="background-color: #fefefe; padding: 10px; border: 1px solid #d8d8d8; width: fit-content;">You will need <a target="_blank" href="%s">Custom Payment Gateways for WooCommerce Pro plugin</a> to add more than one custom payment gateway.</div></p>',
-							'https://wpfactory.com/item/custom-payment-gateways-woocommerce/'
+							'https://imaginate-solutions.com/downloads/custom-payment-gateways-for-woocommerce/'
 						),
 						'total_number'
 					),

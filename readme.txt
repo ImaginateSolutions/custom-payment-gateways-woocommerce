@@ -1,17 +1,22 @@
 === Custom Payment Gateways for WooCommerce ===
-Contributors: dhruvin, imagisol
-Tags: woocommerce, custom payment gateways, custom payment gateway, payment gateways, payment gateway
+Contributors: imagisol, dhruvin
+Tags: woocommerce, custom payment, payment gateway, woocommerce payment, other payment, woocommerce custom payment gateway, other payment gateway, other gateway, accept payments, payments, payment, gateway, gateways, custom, custom payment gateways
 Requires at least: 4.4
-Tested up to: 5.7
-Stable tag: 1.6.6
+Requires PHP: 5.6
+Tested up to: 6.4
+Stable tag: 1.8.1
 License: GNU General Public License v3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Custom payment gateways for WooCommerce.
+Custom payment gateways for WooCommerce - create custom payment gateways to never miss out any payments for your WooCommerce Store. Reduce checkout friction and cart abandonment for your WooCommerce store resulting in sales boost.
 
 == Description ==
 
-**Custom Payment Gateways for WooCommerce** plugin lets you add your own customizable payment gateway to WooCommerce.
+**[Custom Payment Gateways for WooCommerce](https://imaginate-solutions.com/downloads/custom-payment-gateways-for-woocommerce/)** plugin lets you add your own customizable payment gateway to WooCommerce.
+
+More than 40% customers will abandon a purchase if their favourite payment method isn't available. Never miss out on these sales and recover additional revenue by offering alternative payment methods on your WooCommerce stores. While there could be other payment gateways but many of the payment providers do not have any payment gateway for WooCommerce.
+
+Now create those additional payment methods for WooCommerce using **Custom Payment Gateways for WooCommerce**.
 
 For the custom payment gateway you can set:
 
@@ -22,25 +27,43 @@ For the custom payment gateway you can set:
 - Icon
 - Enable for shipping methods
 - Accept for virtual orders
-- Default order status
-- Send additional emails
+- Default WooCommerce Order Status
+- Send Additional WooCommerce Emails
 - Custom return URL (Thank You page)
-- **Input field to collect data on checkout**
-- **Gateway fee**
+- **Input field to collect data on WooCommerce Checkout page**
+- **Gateway fee** - Add Fees or provide Discounts
+
+> I used this to create a gateway using Zelle, Apple Pay, Gpay and many others. Worked like a charm. I hit a snag on a Woo update and support was all over it. Awesome plugin.
+> 
+> Works like charm and support rocks
+> [abossola](https://wordpress.org/support/topic/works-like-charm-and-support-rocks/)
 
 = Premium Version =
 
-With [Pro version](https://wpfactory.com/item/custom-payment-gateways-woocommerce/) you can:
+With [Pro version](https://imaginate-solutions.com/downloads/custom-payment-gateways-for-woocommerce/) you can:
 
-- Add multiple payment gateways
-- Add multiple input fields
-- Add multiple fees
-- Set minimum order amount
+- Add multiple payment gateways - Create unlimited payment gateways on your WooCommerce store.
+- Add multiple input fields - Create unlimited input fields on your WooCommerce Checkout page under payment gateway options to capture necessary details.
+- Add multiple fees.
+- Set a Minimum WooCommerce Order amount for which the WooCommerce Custom Payment Gateway must appear.
+- Set a Maximum WooCommerce Order amount for which the WooCommerce Custom Payment Gateway must not appear for checkout.
+
+= Our other plugins =
+
+* [Custom Shipping Methods for WooCommerce](https://imaginate-solutions.com/downloads/custom-shipping-methods-for-woocommerce/?utm_source=wporg&utm_medium=cpg&utm_campaign=readme/) - Create custom shipping methods for your WooCommerce store and manage dynamic shipping with ease.
+
+* [Payment Gateways by User Role](https://imaginate-solutions.com/downloads/payment-gateways-by-user-roles-for-woocommerce/?utm_source=wporg&utm_medium=cpg&utm_campaign=readme/) - Allow payment gateways to be available or not available for only particular user roles.
+
+* [WooCommerce Addon Uploads](https://imaginate-solutions.com/downloads/woocommerce-addon-uploads/?utm_source=wporg&utm_medium=cpg&utm_campaign=readme/) - Create a print on demand store by allowing users to upload their files when adding products to cart on your WooCommerce store.
+
+* [Variations Radio Buttons for WooCommerce](https://imaginate-solutions.com/downloads/variations-radio-buttons-for-woocommerce/?utm_source=wporg&utm_medium=cpg&utm_campaign=readme/) - Convert your variations dropdown into radio buttons there by allowing customers a much better user experience and speeding up the checkout process.
+
+* [WooCommerce Variations Reports](https://imaginate-solutions.com/downloads/woocommerce-variations-reports/?utm_source=wporg&utm_medium=cpg&utm_campaign=readme/) - Get a report of how your variations sales are happening on your WooCommerce Store.
 
 = Feedback =
 
 * We are open to your suggestions and feedback. Thank you for using or trying out one of our plugins!
-* [Visit plugin site](https://wpfactory.com/item/custom-payment-gateways-woocommerce/).
+* [Visit plugin site](https://imaginate-solutions.com/downloads/custom-payment-gateways-for-woocommerce/).
 
 == Installation ==
 
@@ -48,9 +71,35 @@ With [Pro version](https://wpfactory.com/item/custom-payment-gateways-woocommerc
 2. Activate the plugin through the "Plugins" menu in WordPress.
 3. Start by visiting plugin settings at "WooCommerce > Settings > Custom Payment Gateways".
 
+== Screenshots ==
+
+1. General Settings - Select the number of Gateways you want to add.
+2. Input Fields - Settings related to values submitted via custom fields to be displayed on Thank you page.
+3. Email settings.
+4. Other settings.
+5. Settings related to Fees.
+6. Gateways based on Shipping methods.
+7. Gateway settings.
+8. Configure fees for gateways.
+9. Configure input fields for gateways.
+
 == Changelog ==
 
-= 1.6.6 - 23/06/2020 =
+= 1.8.1 - 14/11/2023 =
+* Fixed a bug resulting in fatal error when editing a product.
+
+= 1.8.0 - 20/10/2023 =
+* Compatibility with WooCommerce HPOS
+* Compatibility with PHP 8.2
+
+= 1.7.0 - 18/04/2023 =
+* Added provisions for allowing discounts in fees via negative values in the Fees field.
+* Added Maximum Order value field which will not show the Custom Payment Gateway if the order amount has reached a particular value.
+* Fixed a bug related to Fees not getting applied when Minimum Order value is set.
+* Fixed compatibility issues with Polylang plugin.
+* WC tested upto 7.6
+
+= 1.6.6 - 23/06/2021 =
 * Fix - Input field was not visible when using WPML.
 * Fix - Title and Description were not translatable.
 * Fix - Stock levels not reducing once an order was placed.

@@ -1,15 +1,15 @@
 <?php
 /**
  * Plugin Name: Custom Payment Gateways for WooCommerce
- * Plugin URI: https://wpfactory.com/item/custom-payment-gateways-woocommerce/
+ * Plugin URI: https://imaginate-solutions.com/downloads/custom-payment-gateways-for-woocommerce/
  * Description: Custom payment gateways for WooCommerce
- * Version: 1.6.6
+ * Version: 1.8.1
  * Author: Imaginate Solutions
  * Author URI: https://imaginate-solutions.com
  * Text Domain: custom-payment-gateways-woocommerce
  * Domain Path: /langs
- * Copyright: © 2020 Imaginate Solutions
- * WC tested up to: 5.4
+ * Copyright: © 2023 Imaginate Solutions.
+ * WC tested up to: 8.2
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,7 +37,7 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways' ) ) :
 		 * @var   string
 		 * @since 1.0.0
 		 */
-		public $version = '1.6.6';
+		public $version = '1.8.1';
 
 		/**
 		 * The single instance of the class.
@@ -46,6 +46,14 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways' ) ) :
 		 * @since 1.0.0
 		 */
 		protected static $_instance = null;
+
+		/**
+		 * The core file reference.
+		 *
+		 * @var   string The path of the core file
+		 * @since 1.0.0
+		 */
+		protected $core = null;
 
 		/**
 		 * Main Alg_WC_Custom_Payment_Gateways Instance
@@ -143,6 +151,14 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways' ) ) :
 			if ( get_option( 'alg_wc_custom_payment_gateways_version', '' ) !== $this->version ) {
 				add_action( 'admin_init', array( $this, 'version_updated' ) );
 			}
+			// HPOS compatibility
+			add_action( 'before_woocommerce_init', array( $this, 'cpg_declare_hpos_compatibility' ) );
+		}
+
+		public function cpg_declare_hpos_compatibility() {
+			if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+				\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+			}
 		}
 
 		/**
@@ -157,7 +173,7 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways' ) ) :
 			$custom_links   = array();
 			$custom_links[] = '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=alg_wc_custom_payment_gateways' ) . '">' . __( 'Settings', 'woocommerce' ) . '</a>';
 			if ( 'custom-payment-gateways-for-woocommerce.php' === basename( __FILE__ ) ) {
-				$custom_links[] = '<a target="_blank" href="https://wpfactory.com/item/custom-payment-gateways-woocommerce/">' .
+				$custom_links[] = '<a target="_blank" href="https://imaginate-solutions.com/downloads/custom-payment-gateways-for-woocommerce/">' .
 				__( 'Unlock All', 'custom-payment-gateways-woocommerce' ) . '</a>';
 			}
 			return array_merge( $custom_links, $links );

@@ -19,6 +19,10 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Settings_Input_Fields' ) ) 
 	 */
 	class Alg_WC_Custom_Payment_Gateways_Settings_Input_Fields extends Alg_WC_Custom_Payment_Gateways_Settings_Section {
 
+		public $id = '';
+
+		public $desc = '';
+
 		/**
 		 * Constructor.
 		 *

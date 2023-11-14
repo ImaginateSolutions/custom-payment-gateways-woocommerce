@@ -12,6 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+use Automattic\WooCommerce\Utilities\OrderUtil;
+use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
+
 if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Input_Fields' ) ) :
 
 	/**
@@ -29,7 +32,7 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Input_Fields' ) ) :
 		public function __construct() {
 			add_action( 'woocommerce_after_checkout_validation', array( $this, 'check_required_input_fields' ), PHP_INT_MAX, 2 );
 			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_input_fields_to_order_meta' ), PHP_INT_MAX, 2 );
-			add_action( 'add_meta_boxes', array( $this, 'add_input_fields_meta_box' ) );
+			add_action( 'add_meta_boxes', array( $this, 'add_input_fields_meta_box' ), 10, 2 );
 			add_action( 'woocommerce_order_details_after_order_table', array( $this, 'add_input_fields_to_order_details' ) );
 			add_action( 'woocommerce_email_after_order_table', array( $this, 'add_input_fields_to_emails' ), 10, 4 );
 			if ( 'yes' === get_option( 'alg_wc_cpg_input_fields_woe_enabled', 'no' ) ) {
@@ -50,7 +53,8 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Input_Fields' ) ) :
 		public function woe_process_input_fields( $value, $order, $field ) {
 			$order_id = $order->get_id();
 			if ( $order_id ) {
-				$input_fields = get_post_meta( $order_id, '_alg_wc_cpg_input_fields', true );
+				$input_fields = $order->get_meta( '_alg_wc_cpg_input_fields', true );
+				//$input_fields = get_post_meta( $order_id, '_alg_wc_cpg_input_fields', true );
 				if ( is_array( $input_fields ) ) {
 					$template = get_option( 'alg_wc_cpg_input_fields_woe_template', '%title%: %value%' );
 					$glue     = get_option( 'alg_wc_cpg_input_fields_woe_glue', ' | ' );
@@ -107,7 +111,8 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Input_Fields' ) ) :
 			) {
 				return;
 			}
-			$input_fields_meta = get_post_meta( $order->get_id(), '_alg_wc_cpg_input_fields', true );
+			$input_fields_meta = $order->get_meta( '_alg_wc_cpg_input_fields', true );
+			//$input_fields_meta = get_post_meta( $order->get_id(), '_alg_wc_cpg_input_fields', true );
 			if ( ! empty( $input_fields_meta ) ) {
 				$templates = ( $plain_text ?
 				get_option( 'alg_wc_cpg_input_fields_add_to_emails_template_plain', array() ) :
@@ -137,7 +142,8 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Input_Fields' ) ) :
 			if ( 'no' === get_option( 'alg_wc_cpg_input_fields_add_to_order_details', 'no' ) ) {
 				return;
 			}
-			$input_fields_meta = get_post_meta( $order->get_id(), '_alg_wc_cpg_input_fields', true );
+			$input_fields_meta = $order->get_meta( '_alg_wc_cpg_input_fields', true );
+			//$input_fields_meta = get_post_meta( $order->get_id(), '_alg_wc_cpg_input_fields', true );
 			if ( ! empty( $input_fields_meta ) ) {
 				$templates = get_option( 'alg_wc_cpg_input_fields_add_to_order_details_template', array() );
 				$start     = ( isset( $templates['header'] ) ? $templates['header'] : '<table class="widefat striped"><tbody>' );
@@ -189,30 +195,52 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Input_Fields' ) ) :
 		 * @since   1.3.0
 		 * @todo    [dev] customizable context (i.e. `side`, `normal`, `advanced`) and priority (i.e. `default`, `low`, `high`)
 		 */
-		public function add_input_fields_meta_box() {
-			$input_fields_meta = get_post_meta( get_the_ID(), '_alg_wc_cpg_input_fields', true );
-			if ( ! empty( $input_fields_meta ) ) {
-				add_meta_box(
-					'alg-wc-cpg-input-fields',
-					__( 'Payment gateway input fields', 'custom-payment-gateways-woocommerce' ),
-					array( $this, 'display_input_fields_meta_box' ),
-					'shop_order',
-					'side'
-				);
+		public function add_input_fields_meta_box( $post_type, $post ) {
+			if ( 'woocommerce_page_wc-orders' === $post_type || 'shop_order' === $post_type ) {
+				if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
+					// HPOS usage is enabled.
+					global $theorder;
+					if ( ! $theorder ) {
+						return;
+					}
+					$input_fields_meta = $theorder->get_meta( '_alg_wc_cpg_input_fields', true );
+				} else {
+					// Traditional CPT-based orders are in use.
+					$input_fields_meta = get_post_meta( get_the_ID(), '_alg_wc_cpg_input_fields', true );
+				}
+
+				if ( ! empty( $input_fields_meta ) ) {
+					$screen = wc_get_container()->get( CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled()
+							? wc_get_page_screen_id( 'shop-order' )
+							: 'shop_order';
+
+					add_meta_box(
+						'alg-wc-cpg-input-fields',
+						__( 'Payment gateway input fields', 'custom-payment-gateways-woocommerce' ),
+						array( $this, 'display_input_fields_meta_box' ),
+						$screen,
+						'side'
+					);
+				}
 			}
 		}
 
 		/**
 		 * Display input fields meta box.
 		 *
-		 * @param mixed $post Post object.
+		 * @param mixed $post_or_order_object Post object.
 		 * @version 1.3.0
 		 * @since   1.3.0
 		 * @todo    [dev] add "Delete data" button
 		 */
-		public function display_input_fields_meta_box( $post ) {
+		public function display_input_fields_meta_box( $post_or_order_object ) {
+			$order = ( $post_or_order_object instanceof WP_Post ) ? wc_get_order( $post_or_order_object->ID ) : $post_or_order_object;
+
+			$input_fields_meta = $order->get_meta( '_alg_wc_cpg_input_fields', true );
+
 			echo $this->get_input_fields_output(
-				get_post_meta( get_the_ID(), '_alg_wc_cpg_input_fields', true ),
+				//get_post_meta( get_the_ID(), '_alg_wc_cpg_input_fields', true ),
+				$input_fields_meta,
 				array(
 					'start' => '<table class="widefat striped"><tbody>',
 					'item'  => '<tr><th>%title%</th><td>%value%</td></tr>',
@@ -234,11 +262,14 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Input_Fields' ) ) :
 		public function add_input_fields_to_order_meta( $order_id, $posted ) {
 			if ( ! empty( $_POST['payment_method'] ) && isset( $_POST['alg_wc_cpg_input_fields'][ $_POST['payment_method'] ] ) ) {
 				$values = array_map( 'sanitize_textarea_field', $_POST['alg_wc_cpg_input_fields'][ $_POST['payment_method'] ] );
-				update_post_meta( $order_id, '_alg_wc_cpg_input_fields', $values );
+				$order = wc_get_order( $order_id );
+				$order->update_meta_data( '_alg_wc_cpg_input_fields', $values );
+				$order->save();
+				//update_post_meta( $order_id, '_alg_wc_cpg_input_fields', $values );
 				if ( 'yes' === get_option( 'alg_wc_cpg_input_fields_add_order_note', 'no' ) ) {
 					$note   = array();
 					$note[] = __( 'Payment gateway input fields', 'custom-payment-gateways-woocommerce' ) . ':';
-					$order  = wc_get_order( $order_id );
+					//$order  = wc_get_order( $order_id );
 					foreach ( $values as $title => $value ) {
 						$note[] = ( $title . ': ' . $value );
 					}
