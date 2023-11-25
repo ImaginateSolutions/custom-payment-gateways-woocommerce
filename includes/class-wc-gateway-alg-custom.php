@@ -409,6 +409,7 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 								'class'       => $this->get_option( 'input_fields_class_' . $i, '' ),
 								'value'       => $this->get_option( 'input_fields_value_' . $i, '' ),
 								'options'     => $this->get_option( 'input_fields_options_' . $i, '' ),
+								'default'     => $this->get_option( 'input_fields_novalue_select_' . $i, '' ),
 							);
 						}
 					}
@@ -428,6 +429,9 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 									' class="' . $input_field['class'] . '"' .
 								'>';
 								$values = explode( PHP_EOL, $input_field['options'] );
+								if ( isset( $input_field['default'] ) && '' != $input_field['default'] ) {
+									$html .= '<option value="">' . $input_field['default'] . '</option>';
+								}
 								foreach ( $values as $value ) {
 									$html .= '<option value="' . $value . '" ' . selected( $input_field['value'], $value, false ) . '>' . $value . '</option>';
 								}
