@@ -1,0 +1,21 @@
+{
+  "devDependencies": {
+    "@wordpress/scripts": "^30.4.0",
+    "webpack": "^5.89.0"
+  },
+  "name": "custom-payment-gateways-woocommerce",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "repository": {
+		"type": "git",
+		"url": "https://github.com/woocommerce/woocommerce.git"
+	}
+}

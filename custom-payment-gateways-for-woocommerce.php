@@ -104,6 +104,8 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways' ) ) :
 			if ( is_admin() ) {
 				$this->admin();
 			}
+
+			add_action( 'woocommerce_blocks_loaded', array( $this, 'alg_gateway_block_support' ) );
 		}
 
 		/**
@@ -222,6 +224,25 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways' ) ) :
 		 */
 		public function plugin_path() {
 			return untrailingslashit( plugin_dir_path( __FILE__ ) );
+		}
+
+		function alg_gateway_block_support() {
+
+			// Check if the required AbstractPaymentMethodType class exists to ensure compatibility with WooCommerce Blocks.
+			if ( ! class_exists( 'Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType' ) ) {
+				return;
+			}
+
+			// Include the custom payment gateway support class.
+			require_once __DIR__ . '/includes/class-wc-gateway-blocks-support.php';
+
+			// Register the custom payment gateway with WooCommerce Blocks.
+			add_action(
+				'woocommerce_blocks_payment_method_type_registration',
+				function ( Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry ) {
+					$payment_method_registry->register( new WC_Gateway_Blocks_Support() );
+				}
+			);
 		}
 
 	}
