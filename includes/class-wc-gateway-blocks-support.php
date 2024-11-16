@@ -38,8 +38,6 @@ final class WC_Gateway_Blocks_Support extends AbstractPaymentMethodType {
 	 * Sets up the gateway by adding the necessary action for processing payments with context.
 	 */
 	public function __construct() {
-		//add_action( 'woocommerce_cart_calculate_fees', array( $this, 'add_custom_cart_fee' ));
-		add_action('woocommerce_rest_cart_before_add_item', array( $this, 'add_custom_cart_fee' ), 10, 2);
 		add_action( 'woocommerce_rest_checkout_process_payment_with_context', array( $this, 'checkout_process_payment_with_context' ), 10, 2 );
 	}
 
@@ -176,10 +174,14 @@ final class WC_Gateway_Blocks_Support extends AbstractPaymentMethodType {
 	 * This function takes a string containing multiple lines, splits it by newline characters,
 	 * and returns an array where each element corresponds to a line. Empty lines are removed.
 	 *
-	 * @param string $string The input string with lines separated by new line characters.
+	 * @param string $stringdata The input string with lines separated by new line characters.
 	 * @return array An array of lines from the input string, with empty lines removed.
 	 */
 	public function convert_newline_to_array( $stringdata ) {
+
+		if ( empty( $stringdata ) ) :
+			return array();
+		endif;
 
 		$normalized_string = str_replace( array( "\r\n", "\r" ), "\n", $stringdata );
 		// Trim any extra spaces or new lines from the beginning and end of the string.
@@ -188,15 +190,5 @@ final class WC_Gateway_Blocks_Support extends AbstractPaymentMethodType {
 		$array = explode( PHP_EOL, $trimmed_string );
 		// Filter out any empty lines.
 		return array_filter( $array, 'strlen' );
-	}
-
-	public function add_custom_cart_fee( $cart, $request_data ) {
-		// Define the custom fee
-		$fee_amount = 10; // Example fee amount
-		$fee_name = 'Custom Fee'; // Example fee name
-		exit;
-	
-		// Add the fee to the cart
-		$cart->add_fee( $fee_name, $fee_amount, true, '' );
 	}
 }

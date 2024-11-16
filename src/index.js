@@ -1,13 +1,15 @@
+import { __ } from '@wordpress/i18n';
 import { decodeEntities } from '@wordpress/html-entities';
 import { useEffect, useState, useCallback } from '@wordpress/element';
+
 import Fields from './fields';
 import './style.scss';
 
-const { __experimentalRegisterCheckoutFilters } = window.wc.blocksCheckout;
-const { registerPaymentMethod, registerPaymentMethodExtensionCallbacks } = window.wc.wcBlocksRegistry;
+const { extensionCartUpdate } = wc.blocksCheckout;
+const { registerPaymentMethod } = window.wc.wcBlocksRegistry;
 const { getSetting } = window.wc.wcSettings;
-const { select, subscribe, useSelect, useDispatch } = wp.data;
-const { CART_STORE_KEY, CHECKOUT_STORE_KEY } = window.wc.wcBlocksData;
+const { PAYMENT_STORE_KEY } = window.wc.wcBlocksData;
+
 
 [...Array(1)].map((e, i) => {
     const settings = getSetting(`alg_custom_gateway_${i + 1}_data`, {});
@@ -56,10 +58,9 @@ const { CART_STORE_KEY, CHECKOUT_STORE_KEY } = window.wc.wcBlocksData;
                 if (missingRequiredFields) {
                     return {
                         type: emitResponse.responseTypes.ERROR,
-                        message: 'Please fill in all required fields.',
+                        message: __( 'Please fill in all required fields.', 'custom-payment-gateways-woocommerce' ),
                     };
                 }
-
 
                 if (newlabels && newvalues) {
                     return {
@@ -76,7 +77,7 @@ const { CART_STORE_KEY, CHECKOUT_STORE_KEY } = window.wc.wcBlocksData;
 
                 return {
                     type: emitResponse.responseTypes.ERROR,
-                    message: 'There was an error',
+                    message: __( 'There was an error.', 'custom-payment-gateways-woocommerce' ),
                 };
             });
             // Unsubscribes when this component is unmounted.
@@ -144,3 +145,11 @@ const { CART_STORE_KEY, CHECKOUT_STORE_KEY } = window.wc.wcBlocksData;
         },
     });
 });
+wp?.hooks?.addAction( 'experimental__woocommerce_blocks-checkout-set-active-payment-method', 'extension-fees', function( paymentMethod ) {
+    var update_cart = extensionCartUpdate( {
+        namespace: 'extension-fees',
+        data: {
+            payment_method: paymentMethod.value
+        },
+    });
+} ); 

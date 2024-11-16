@@ -12,17 +12,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__);
-
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
 
 const {
   TextInput,
   SortSelect,
   Textarea,
-  CheckboxControl
+  CheckboxControl,
+  ValidatedTextInput
 } = window.wc.blocksComponents;
 const Fields = props => {
   const {
@@ -36,30 +34,35 @@ const Fields = props => {
   switch (type) {
     case 'text':
     case 'number':
-    case 'email':
     case 'password':
     case 'tel':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextInput, {
+        ...attributes,
+        onChange: event,
+        className: `wc-block-components-text-input ${inclass}`
+      });
     case 'url':
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TextInput, {
+    case 'email':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(ValidatedTextInput, {
         ...attributes,
         onChange: event,
         className: `wc-block-components-text-input ${inclass}`
       });
     case 'checkbox':
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(CheckboxControl, {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(CheckboxControl, {
         ...attributes,
         onChange: event,
         className: `wc-block-components-checkbox__input ${inclass}`
       });
     case 'select':
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(SortSelect, {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SortSelect, {
         ...attributes,
         onChange: event
       });
     case 'textarea':
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
         className: "wc-block-components-textarea-wrap",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Textarea, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Textarea, {
           ...attributes,
           onTextChange: event,
           placeholder: attributes.label,
@@ -81,42 +84,37 @@ const Fields = props => {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/html-entities */ "@wordpress/html-entities");
-/* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _fields__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./fields */ "./src/fields.js");
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./style.scss */ "./src/style.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/html-entities */ "@wordpress/html-entities");
+/* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _fields__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./fields */ "./src/fields.js");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./style.scss */ "./src/style.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+
 
 
 
 
 
 const {
-  __experimentalRegisterCheckoutFilters
-} = window.wc.blocksCheckout;
+  extensionCartUpdate
+} = wc.blocksCheckout;
 const {
-  registerPaymentMethod,
-  registerPaymentMethodExtensionCallbacks
+  registerPaymentMethod
 } = window.wc.wcBlocksRegistry;
 const {
   getSetting
 } = window.wc.wcSettings;
 const {
-  select,
-  subscribe,
-  useSelect,
-  useDispatch
-} = wp.data;
-const {
-  CART_STORE_KEY,
-  CHECKOUT_STORE_KEY
+  PAYMENT_STORE_KEY
 } = window.wc.wcBlocksData;
 [...Array(1)].map((e, i) => {
   const settings = getSetting(`alg_custom_gateway_${i + 1}_data`, {});
-  const label = (0,_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_0__.decodeEntities)(settings.title);
+  const label = (0,_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__.decodeEntities)(settings.title);
   var newlabels = '';
   var newvalues = '';
   var newobject = [];
@@ -130,7 +128,7 @@ const {
       onPaymentSetup
     } = eventRegistration;
     const [fieldValues, setFieldValues] = useState([{}]);
-    const onInputsChanges = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useCallback)((value, index, label) => {
+    const onInputsChanges = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useCallback)((value, index, label) => {
       setFieldValues(prevValues => {
         const newValues = [...prevValues];
         if (!newValues[index]) newValues[index] = {};
@@ -148,7 +146,7 @@ const {
     newobject = fieldValues;
     newlabels = fieldValues.map(item => item.label);
     newvalues = fieldValues.map(item => item.value);
-    (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
       const unsubscribe = onPaymentSetup(async () => {
         // Here we can do any processing we need, and then emit a response.
         // For example, we might validate a custom field, or perform an AJAX request, and then emit a response indicating it is valid or not.
@@ -163,7 +161,7 @@ const {
         if (missingRequiredFields) {
           return {
             type: emitResponse.responseTypes.ERROR,
-            message: 'Please fill in all required fields.'
+            message: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Please fill in all required fields.', 'custom-payment-gateways-woocommerce')
           };
         }
         if (newlabels && newvalues) {
@@ -180,7 +178,7 @@ const {
         }
         return {
           type: emitResponse.responseTypes.ERROR,
-          message: 'There was an error'
+          message: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('There was an error.', 'custom-payment-gateways-woocommerce')
         };
       });
       // Unsubscribes when this component is unmounted.
@@ -188,8 +186,8 @@ const {
         unsubscribe();
       };
     }, [emitResponse.responseTypes, onPaymentSetup, setFieldValues]);
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
-      children: [(0,_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_0__.decodeEntities)(settings.description || ''), settings?.fields?.map((item, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_fields__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+      children: [(0,_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__.decodeEntities)(settings.description || ''), settings?.fields?.map((item, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_fields__WEBPACK_IMPORTED_MODULE_3__["default"], {
         attributes: {
           ...item,
           errorId: `${item.name}-error`,
@@ -213,7 +211,7 @@ const {
     const {
       PaymentMethodLabel
     } = props.components;
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(PaymentMethodLabel, {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(PaymentMethodLabel, {
       text: label
     });
   };
@@ -231,17 +229,25 @@ const {
   registerPaymentMethod({
     name: `alg_custom_gateway_${i + 1}`,
     gatewayId: `alg_custom_gateway_${i + 1}`,
-    label: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(Label, {}),
-    content: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(Content, {
-      useState: _wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState
+    label: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(Label, {}),
+    content: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(Content, {
+      useState: _wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState
     }),
-    edit: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(Content, {
-      useState: _wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState
+    edit: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(Content, {
+      useState: _wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState
     }),
     canMakePayment: () => true,
     ariaLabel: label || 'gateway',
     supports: {
       features: settings.supports
+    }
+  });
+});
+wp?.hooks?.addAction('experimental__woocommerce_blocks-checkout-set-active-payment-method', 'extension-fees', function (paymentMethod) {
+  var update_cart = extensionCartUpdate({
+    namespace: 'extension-fees',
+    data: {
+      payment_method: paymentMethod.value
     }
   });
 });
@@ -270,16 +276,6 @@ module.exports = window["ReactJSXRuntime"];
 
 /***/ }),
 
-/***/ "@wordpress/components":
-/*!************************************!*\
-  !*** external ["wp","components"] ***!
-  \************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["components"];
-
-/***/ }),
-
 /***/ "@wordpress/element":
 /*!*********************************!*\
   !*** external ["wp","element"] ***!
@@ -297,6 +293,16 @@ module.exports = window["wp"]["element"];
 /***/ ((module) => {
 
 module.exports = window["wp"]["htmlEntities"];
+
+/***/ }),
+
+/***/ "@wordpress/i18n":
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["i18n"];
 
 /***/ })
 

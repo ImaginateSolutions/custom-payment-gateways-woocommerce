@@ -226,25 +226,54 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways' ) ) :
 			return untrailingslashit( plugin_dir_path( __FILE__ ) );
 		}
 
-		function alg_gateway_block_support() {
-
-			// Check if the required AbstractPaymentMethodType class exists to ensure compatibility with WooCommerce Blocks.
+		/**
+		 * Adds support for the custom payment gateway in WooCommerce Blocks.
+		 *
+		 * @return void
+		 */
+		public function alg_gateway_block_support() {
+			// Check if the AbstractPaymentMethodType class exists (required for WooCommerce Blocks compatibility).
 			if ( ! class_exists( 'Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType' ) ) {
 				return;
 			}
 
-			// Include the custom payment gateway support class.
+			// Register a callback to handle cart updates (e.g., applying fees dynamically).
+			woocommerce_store_api_register_update_callback(
+				array(
+					'namespace' => 'extension-fees', // Custom namespace for the callback.
+					'callback'  => array( $this, 'update_cart_fees' ), // Method to handle the update.
+				)
+			);
+
+			// Include the custom payment gateway support class for WooCommerce Blocks.
 			require_once __DIR__ . '/includes/class-wc-gateway-blocks-support.php';
 
 			// Register the custom payment gateway with WooCommerce Blocks.
 			add_action(
 				'woocommerce_blocks_payment_method_type_registration',
 				function ( Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry ) {
+					// Register the custom payment gateway with the PaymentMethodRegistry.
 					$payment_method_registry->register( new WC_Gateway_Blocks_Support() );
 				}
 			);
 		}
 
+
+		/**
+		 * Updates the cart session with the selected payment method.
+		 *
+		 * @param array $data The data array received from the frontend, which may contain
+		 *                    a `payment_method` key representing the selected payment method.
+		 *
+		 * @return void
+		 */
+		public function update_cart_fees( $data ) {
+			// Check if the 'payment_method' key is set in the input data.
+			if ( isset( $data['payment_method'] ) ) {
+				// Save the selected payment method in the WooCommerce session.
+				WC()->session->set( 'chosen_payment_method', $data['payment_method'] );
+			}
+		}
 	}
 
 endif;

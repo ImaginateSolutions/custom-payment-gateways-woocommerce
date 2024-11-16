@@ -1,5 +1,4 @@
-import { SelectControl } from '@wordpress/components';
-const { TextInput, SortSelect, Textarea, CheckboxControl } = window.wc.blocksComponents;
+const { TextInput, SortSelect, Textarea, CheckboxControl, ValidatedTextInput } = window.wc.blocksComponents;
 
 const Fields = (props) => {
     const { attributes, event } = props;
@@ -8,11 +7,16 @@ const Fields = (props) => {
     switch(type) {
         case 'text':
         case 'number':
-        case 'email':
         case 'password':
         case 'tel':
-        case 'url':
             return  <TextInput
+                {...attributes}
+                onChange={ event }
+                className={`wc-block-components-text-input ${inclass}`}
+            />
+        case 'url':
+        case 'email':
+            return <ValidatedTextInput
                 {...attributes}
                 onChange={ event }
                 className={`wc-block-components-text-input ${inclass}`}
@@ -36,7 +40,6 @@ const Fields = (props) => {
                         placeholder={attributes.label}
                         className={`wc-block-components-textarea ${inclass}`}
                     />
-                    {/* <div class="wc-block-components-validation-error" role="alert"><p>Please enter a valid test input</p></div> */}
                 </div>
         default:
             return null
