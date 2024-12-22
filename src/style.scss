@@ -1,0 +1,35 @@
+.wc-block-components-form .wc-block-components-text-input input[type=month],
+.wc-block-components-form .wc-block-components-text-input input[type=week]{
+    background-color: #fff;
+    border: 1px solid hsla(0,0%,7%,.8);
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: #2b2d2f;
+    font-family: inherit;
+    font-size: 1em;
+    height: 50px;
+    line-height: 1em;
+    margin: 0;
+    min-height: 0;
+    padding: 1em .5em;
+    width: 100%
+}
+.wc-block-components-textarea-wrap{
+    margin-top: 16px;
+    position: relative;
+}
+select.wc-block-components-sort-select__select{
+    background-color: #fff;
+    border: 1px solid hsla(0,0%,7%,.8);
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: #2b2d2f;
+    font-family: inherit;
+    font-size: 1em;
+    height: 50px;
+    line-height: 1em;
+    margin: 0;
+    min-height: 0;
+    padding: .5em;
+    width: 100%
+}
