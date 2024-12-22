@@ -3,8 +3,8 @@ Contributors: imagisol, dhruvin
 Tags: woocommerce, custom payment, payment gateway, woocommerce payment, other payment, woocommerce custom payment gateway, other payment gateway, other gateway, accept payments, payments, payment, gateway, gateways, custom, custom payment gateways
 Requires at least: 4.4
 Requires PHP: 5.6
-Tested up to: 6.4
-Stable tag: 1.8.1
+Tested up to: 6.7
+Stable tag: 2.0.0
 License: GNU General Public License v3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -37,6 +37,10 @@ For the custom payment gateway you can set:
 > 
 > Works like charm and support rocks
 > [abossola](https://wordpress.org/support/topic/works-like-charm-and-support-rocks/)
+
+= Compatible with WooCommerce block-based checkout =
+
+Custom Payment Gateways for WooCommerce is now compatible with WooCommerce Checkout Blocks. This allows you to use the modern checkout experience and enable customized payment gateway option.
 
 = Premium Version =
 
@@ -84,6 +88,9 @@ With [Pro version](https://imaginate-solutions.com/downloads/custom-payment-gate
 9. Configure input fields for gateways.
 
 == Changelog ==
+
+= 2.0.0 - 23/12/2024 =
+* Compatibility with Checkout Blocks - Custom Payment Gateways are now available with Checkout Blocks
 
 = 1.8.1 - 14/11/2023 =
 * Fixed a bug resulting in fatal error when editing a product.
