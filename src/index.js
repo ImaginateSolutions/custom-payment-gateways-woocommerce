@@ -88,13 +88,15 @@ const { PAYMENT_STORE_KEY } = window.wc.wcBlocksData;
 
         return (
             <>
-                {decodeEntities(settings.description || '')}
+                <div dangerouslySetInnerHTML={{ __html: decodeEntities(settings.description || '') }} />
+                {/*{decodeEntities(settings.description || '')}*/}
                 {settings?.fields?.map((item, index) => (
                     <Fields
                         key={item.name || index}
                         attributes={{
                             ...item,
                             errorId: `${item.name}-error`,
+                            placeholder: undefined,
                             ...(item.type === 'checkbox' ? { checked: fieldValues[index]?.['value'] } : { value: fieldValues[index]?.['value'] || '' }),
                             ...(item.type === 'select' ? { options: item.options?.map((label, index) => ({
                                 key: label,

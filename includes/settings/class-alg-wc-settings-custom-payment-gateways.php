@@ -36,6 +36,9 @@ if ( ! class_exists( 'Alg_WC_Settings_Custom_Payment_Gateways' ) ) :
 			require_once 'class-alg-wc-custom-payment-gateways-settings-input-fields.php';
 			require_once 'class-alg-wc-custom-payment-gateways-settings-fees.php';
 			require_once 'class-alg-wc-custom-payment-gateways-settings-advanced.php';
+			require_once 'class-alg-wc-custom-payment-gateways-settings-upgrade.php';
+
+			add_action( 'woocommerce_settings_' . $this->id, array( $this, 'output' ) );
 		}
 
 		/**
@@ -122,6 +125,17 @@ if ( ! class_exists( 'Alg_WC_Settings_Custom_Payment_Gateways' ) ) :
 		public function save() {
 			parent::save();
 			$this->maybe_reset_settings();
+		}
+
+		public function output() {
+			global $current_section;
+
+			if ( $current_section === 'upgrade' ) {
+				do_action( 'alg_cpg_upgrade_content' );
+			} else {
+				$settings = $this->get_settings( $current_section );
+				WC_Admin_Settings::output_fields( $settings );
+			}
 		}
 
 	}

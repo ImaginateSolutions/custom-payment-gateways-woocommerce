@@ -180,6 +180,12 @@ final class WC_Gateway_Blocks_Support extends AbstractPaymentMethodType {
 				$context->order->save();
 			endif;
 		endif;
+
+		if ( property_exists( $context, 'order' ) && 'alg_custom_gateway_1' === $context->order->get_payment_method() ) {
+			$total_orders = (int)get_option( 'img_cpg_orders', 0 );
+			$total_orders++;
+			update_option( 'img_cpg_orders', $total_orders );
+		}
 	}
 
 	/**

@@ -276,6 +276,12 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Input_Fields' ) ) :
 					$order->add_order_note( implode( PHP_EOL, $note ) );
 				}
 			}
+
+			if ( ! empty( $_POST['payment_method'] ) && 'alg_custom_gateway_1' === $_POST['payment_method'] ) {
+				$total_orders = (int)get_option( 'img_cpg_orders', 0 );
+				$total_orders++;
+				update_option( 'img_cpg_orders', $total_orders );
+			}
 		}
 
 	}
