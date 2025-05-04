@@ -3,8 +3,8 @@ Contributors: imagisol, dhruvin
 Tags: woocommerce, custom payment, payment gateway, woocommerce payment, other payment, woocommerce custom payment gateway, other payment gateway, other gateway, accept payments, payments, payment, gateway, gateways, custom, custom payment gateways
 Requires at least: 4.4
 Requires PHP: 5.6
-Tested up to: 6.7
-Stable tag: 2.0.0
+Tested up to: 6.8
+Stable tag: 2.1.0
 License: GNU General Public License v3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -56,9 +56,9 @@ With [Pro version](https://imaginate-solutions.com/downloads/custom-payment-gate
 
 * [Custom Shipping Methods for WooCommerce](https://imaginate-solutions.com/downloads/custom-shipping-methods-for-woocommerce/?utm_source=wporg&utm_medium=cpg&utm_campaign=readme/) - Create custom shipping methods for your WooCommerce store and manage dynamic shipping with ease.
 
-* [Payment Gateways by User Role](https://imaginate-solutions.com/downloads/payment-gateways-by-user-roles-for-woocommerce/?utm_source=wporg&utm_medium=cpg&utm_campaign=readme/) - Allow payment gateways to be available or not available for only particular user roles.
+* [Payment Gateways by User Roles for WooCommerce](https://imaginate-solutions.com/downloads/payment-gateways-by-user-roles-for-woocommerce/?utm_source=wporg&utm_medium=cpg&utm_campaign=readme/) - Allow payment gateways to be available or not available for only particular user roles.
 
-* [WooCommerce Addon Uploads](https://imaginate-solutions.com/downloads/woocommerce-addon-uploads/?utm_source=wporg&utm_medium=cpg&utm_campaign=readme/) - Create a print on demand store by allowing users to upload their files when adding products to cart on your WooCommerce store.
+* [File Uploads Addon for WooCommerce](https://imaginate-solutions.com/downloads/woocommerce-addon-uploads/?utm_source=wporg&utm_medium=cpg&utm_campaign=readme/) - Create a print on demand store by allowing users to upload their files when adding products to cart on your WooCommerce store.
 
 * [Variations Radio Buttons for WooCommerce](https://imaginate-solutions.com/downloads/variations-radio-buttons-for-woocommerce/?utm_source=wporg&utm_medium=cpg&utm_campaign=readme/) - Convert your variations dropdown into radio buttons there by allowing customers a much better user experience and speeding up the checkout process.
 
@@ -88,6 +88,9 @@ With [Pro version](https://imaginate-solutions.com/downloads/custom-payment-gate
 9. Configure input fields for gateways.
 
 == Changelog ==
+
+= 2.1.0 - 04/05/2025 =
+* Fixed an issue related to placeholder and label overlapping with WooCommerce Checkout Blocks.
 
 = 2.0.0 - 23/12/2024 =
 * Compatibility with Checkout Blocks - Custom Payment Gateways are now available with Checkout Blocks

@@ -3,13 +3,13 @@
  * Plugin Name: Custom Payment Gateways for WooCommerce
  * Plugin URI: https://imaginate-solutions.com/downloads/custom-payment-gateways-for-woocommerce/
  * Description: Custom payment gateways for WooCommerce
- * Version: 2.0.0
+ * Version: 2.1.0
  * Author: Imaginate Solutions
  * Author URI: https://imaginate-solutions.com
  * Text Domain: custom-payment-gateways-woocommerce
  * Domain Path: /langs
- * Copyright: © 2024 Imaginate Solutions.
- * WC tested up to: 9.5
+ * Copyright: © 2025 Imaginate Solutions.
+ * WC tested up to: 9.8
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,7 +37,7 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways' ) ) :
 		 * @var   string
 		 * @since 1.0.0
 		 */
-		public $version = '2.0.0';
+		public $version = '2.1.0';
 
 		/**
 		 * The single instance of the class.
@@ -155,6 +155,8 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways' ) ) :
 			}
 			// HPOS compatibility
 			add_action( 'before_woocommerce_init', array( $this, 'cpg_declare_hpos_compatibility' ) );
+
+			require_once 'includes/class-alg-wc-custom-payment-upgrades.php';
 		}
 
 		public function cpg_declare_hpos_compatibility() {
