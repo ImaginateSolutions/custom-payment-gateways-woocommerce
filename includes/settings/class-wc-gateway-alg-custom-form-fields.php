@@ -376,6 +376,12 @@ if ( 'yes' === get_option( 'alg_wc_cpg_input_fields_enabled', 'yes' ) ) {
 					'type'        => 'text',
 					'css'         => 'width:100%;',
 				),
+				'input_fields_novalue_select_' . $i       => array(
+					'description' => __( 'Empty option text for select', 'custom-payment-gateways-woocommerce' ) . ' (' . __( 'optional', 'custom-payment-gateways-woocommerce' ) . ')',
+					'default'     => '',
+					'type'        => 'text',
+					'css'         => 'width:100%;',
+				),
 				'input_fields_options_' . $i     => array(
 					'description' => __( 'Options', 'custom-payment-gateways-woocommerce' ) . ' (' . __( 'for "Select" type; one option per line', 'custom-payment-gateways-woocommerce' ) . ')',
 					'default'     => '',
