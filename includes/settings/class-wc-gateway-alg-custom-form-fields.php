@@ -356,6 +356,7 @@ if ( 'yes' === get_option( 'alg_wc_cpg_input_fields_enabled', 'yes' ) ) {
 						'password' => __( 'Password', 'custom-payment-gateways-woocommerce' ),
 						'checkbox' => __( 'Checkbox', 'custom-payment-gateways-woocommerce' ),
 						'textarea' => __( 'Textarea', 'custom-payment-gateways-woocommerce' ),
+						'file'     => __( 'File Upload', 'custom-payment-gateways-woocommerce' ),
 					),
 				),
 				'input_fields_placeholder_' . $i => array(
@@ -380,6 +381,18 @@ if ( 'yes' === get_option( 'alg_wc_cpg_input_fields_enabled', 'yes' ) ) {
 					'description' => __( 'Options', 'custom-payment-gateways-woocommerce' ) . ' (' . __( 'for "Select" type; one option per line', 'custom-payment-gateways-woocommerce' ) . ')',
 					'default'     => '',
 					'type'        => 'textarea',
+					'css'         => 'width:100%;',
+				),
+				'input_fields_file_size_' . $i   => array(
+					'description' => __( 'File Upload Size (MB)', 'custom-payment-gateways-woocommerce' ),
+					'default'     => '2',
+					'type'        => 'number',
+					'css'         => 'width:100%;',
+				),
+				'input_fields_file_types_' . $i  => array(
+					'description' => __( 'Supported Upload Files', 'custom-payment-gateways-woocommerce' ) . ' (' . __( 'optional', 'custom-payment-gateways-woocommerce' ) . ')',
+					'default'     => 'jpg,png,pdf',
+					'type'        => 'text',
 					'css'         => 'width:100%;',
 				),
 			)

@@ -10,11 +10,10 @@ const { registerPaymentMethod } = window.wc.wcBlocksRegistry;
 const { getSetting } = window.wc.wcSettings;
 const { PAYMENT_STORE_KEY } = window.wc.wcBlocksData;
 
-
 [...Array(1)].map((e, i) => {
     const settings = getSetting(`alg_custom_gateway_${i + 1}_data`, {});
     const label = decodeEntities(settings.title);
-
+    
     var newlabels = '';
     var newvalues = '';
     var newobject = [];
@@ -25,12 +24,16 @@ const { PAYMENT_STORE_KEY } = window.wc.wcBlocksData;
         const [fieldValues, setFieldValues] = useState([{}]);
 
         const onInputsChanges = useCallback(
-            (value, index, label) => {
+            (value, index, label, type) => {
                 setFieldValues((prevValues) => {
                     const newValues = [...prevValues];
                     if (!newValues[index]) newValues[index] = {};
-                    newValues[index] = { ...newValues[index], label: label };
-                    newValues[index] = { ...newValues[index], value: value };
+                    // For file input, store file object or file name
+                    if (type === 'file') {
+                        newValues[index] = { ...newValues[index], label: label, value: value, file: value };
+                    } else {
+                        newValues[index] = { ...newValues[index], label: label, value: value };
+                    }
                     return newValues;
                 });
             },
@@ -48,37 +51,70 @@ const { PAYMENT_STORE_KEY } = window.wc.wcBlocksData;
                 // For example, we might validate a custom field, or perform an AJAX request, and then emit a response indicating it is valid or not.
 
                 const missingRequiredFields = settings.fields.some((field, index) => {
-                    if('checkbox' === field.type){
-                        return field.required && (!newobject[index]?.value );
-                    }else{
+                    if ('checkbox' === field.type) {
+                        return field.required && (!newobject[index]?.value);
+                    } else if ('file' === field.type) {
+                        // File is required and not uploaded
+                        return field.required && (!newobject[index]?.file || (newobject[index]?.file instanceof File && !newobject[index]?.file.name));
+                    } else {
                         return field.required && (!newobject[index]?.value || newobject[index]?.value.trim() === '');
                     }
                 });
-                
+               
                 if (missingRequiredFields) {
                     return {
                         type: emitResponse.responseTypes.ERROR,
-                        message: __( 'Please fill in all required fields.', 'custom-payment-gateways-woocommerce' ),
+                        message: __('Please fill in all required fields.', 'custom-payment-gateways-woocommerce'),
                     };
                 }
 
-                if (newlabels && newvalues) {
-                    return {
-                        type: emitResponse.responseTypes.SUCCESS,
-                        meta: {
-                            paymentMethodData: {
-                                customGatewayIS: true,
-                                GatewayISData: newvalues.join(','),
-                                GatewayISNames: newlabels.join(','),
-                            },
-                        },
-                    };
-                }
+                if (newobject[i]?.file && newobject[i]?.file instanceof File) {
+
+                    const fileField = settings.fields.find(f => f.type === 'file');
+                    const fileSizeLimit = fileField?.file_size;
+                    const fileTypes = fileField?.file_types;
+
+					const formData = new FormData();
+					formData.append('custom_file', newobject[i]?.file);
+					formData.append('action', 'custom_gateway_upload_file');
+					formData.append('security', alg_wc_custom_payment_gateways_data.nonce); // nonce from localized script
+                    formData.append('file_upload_size', fileSizeLimit); // nonce from localized script
+				    formData.append('file_upload_types', fileTypes); // nonce from localized script
+					try {
+						const response = await fetch(alg_wc_custom_payment_gateways_data.ajax_url, {
+							method: 'POST',
+							body: formData,
+						});
+						const result = await response.json();
+                        
+						if (result.success && result.data?.file_url) {
+							newvalues = [result.data.file_url];
+						} else {
+							return {
+								type: emitResponse.responseTypes.ERROR,
+								message: __(  result.data.message, 'custom-payment-gateways-woocommerce'),
+							};
+						}
+					} catch (e) {
+						return {
+							type: emitResponse.responseTypes.ERROR,
+							message: __('File upload failed due to error.', 'custom-payment-gateways-woocommerce'),
+						};
+					}
+				}
+               
 
                 return {
-                    type: emitResponse.responseTypes.ERROR,
-                    message: __( 'There was an error.', 'custom-payment-gateways-woocommerce' ),
+                    type: emitResponse.responseTypes.SUCCESS,
+                    meta: {
+                        paymentMethodData: {
+                            customGatewayIS: true,
+                            GatewayISData: newvalues.join(','),
+                            GatewayISNames: newlabels.join(','),
+                        },
+                    },
                 };
+                
             });
             // Unsubscribes when this component is unmounted.
             return () => {
@@ -89,7 +125,6 @@ const { PAYMENT_STORE_KEY } = window.wc.wcBlocksData;
         return (
             <>
                 <div dangerouslySetInnerHTML={{ __html: decodeEntities(settings.description || '') }} />
-                {/*{decodeEntities(settings.description || '')}*/}
                 {settings?.fields?.map((item, index) => (
                     <Fields
                         key={item.name || index}
@@ -98,16 +133,29 @@ const { PAYMENT_STORE_KEY } = window.wc.wcBlocksData;
                             errorId: `${item.name}-error`,
                             placeholder: undefined,
                             ...(item.type === 'checkbox' ? { checked: fieldValues[index]?.['value'] } : { value: fieldValues[index]?.['value'] || '' }),
-                            ...(item.type === 'select' ? { options: item.options?.map((label, index) => ({
-                                key: label,
-                                label: label
-                              })) } : {} )
+                            ...(item.type === 'select' ? {
+                                options: item.options?.map((label, index) => ({
+                                    key: label,
+                                    label: label
+                                }))
+                            } : {}),
+                            ...(item.type === 'file' ? {
+                                // For file input, value should be undefined, let browser handle file input internally
+                                value: undefined
+                            } : {})
                         }}
-                        event={(value) => onInputsChanges(
-                            (item.type === 'select' ? value.target.value : value),  
-                            index, 
-                            item.label)
-                        }
+                        event={(valueOrEvent) => {
+                            // For file input, value is event.target.files[0]
+                            if (item.type === 'file') {
+                                // For file input, valueOrEvent is the event object
+                                const fileObj = valueOrEvent?.target?.files?.[0] || null;
+                                onInputsChanges(fileObj, index, item.label, item.type);
+                            } else if (item.type === 'select') {
+                                onInputsChanges(valueOrEvent.target.value, index, item.label, item.type);
+                            } else {
+                                onInputsChanges(valueOrEvent, index, item.label, item.type);
+                            }
+                        }}
                     />
                 ))}
             </>
@@ -147,11 +195,11 @@ const { PAYMENT_STORE_KEY } = window.wc.wcBlocksData;
         },
     });
 });
-wp?.hooks?.addAction( 'experimental__woocommerce_blocks-checkout-set-active-payment-method', 'extension-fees', function( paymentMethod ) {
-    var update_cart = extensionCartUpdate( {
+wp?.hooks?.addAction('experimental__woocommerce_blocks-checkout-set-active-payment-method', 'extension-fees', function (paymentMethod) {
+    var update_cart = extensionCartUpdate({
         namespace: 'extension-fees',
         data: {
             payment_method: paymentMethod.value
         },
     });
-} ); 
+});

@@ -409,6 +409,8 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 								'class'       => $this->get_option( 'input_fields_class_' . $i, '' ),
 								'value'       => $this->get_option( 'input_fields_value_' . $i, '' ),
 								'options'     => $this->get_option( 'input_fields_options_' . $i, '' ),
+								'file_size'   => $this->get_option( 'input_fields_file_size_' . $i, '' ),
+								'file_types'  => $this->get_option( 'input_fields_file_types_' . $i, '' ),
 							);
 						}
 					}
@@ -440,6 +442,18 @@ if ( ! function_exists( 'init_wc_gateway_alg_custom_class' ) ) {
 									' placeholder="' . $input_field['placeholder'] . '"' .
 									' class="' . $input_field['class'] . '"' .
 								'>' . $input_field['value'] . '</textarea>';
+								break;
+							case 'file':
+								$html .= '<input' .
+									' type="file"' .
+									' name="alg_wc_cpg_input_fields[' . $this->id . '][' . $input_field['title'] . ']"' .
+									' id="alg_wc_cpg_input_fields_' . $this->id . '_' . sanitize_title( $input_field['title'] ) . '"' .
+									' file_size="' . $input_field['file_size'] . '"' .
+									' file_types="' . $input_field['file_types'] . '"' .
+									' class="alg-wc-cpg-file-fields' . $input_field['class'] . '"' .
+									' value="' . $input_field['value'] . '">
+									<input type="hidden" class="alg-wc-cpg-file-fields-value" name="alg_wc_cpg_input_fields[' . $this->id . '][' . $input_field['title'] . ']" />
+									';
 								break;
 							default: // e.g. `text`.
 								$html .= '<input' .

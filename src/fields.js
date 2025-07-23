@@ -41,6 +41,18 @@ const Fields = (props) => {
                         className={`wc-block-components-textarea ${inclass}`}
                     />
                 </div>
+        case 'file':
+            return <div className='wc-block-components-file-wrap'>
+                    <label htmlFor={attributes.id || attributes.name}>
+                        {attributes.label}
+                    </label>
+                    <input
+                        type="file"
+                        onChange={event} // pass the event, not event.target.value!
+                        {...attributes}
+                        className={`wc-block-components-text-input ${inclass}`}
+                    />
+            </div>
         default:
             return null
     }

@@ -38,6 +38,71 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Input_Fields' ) ) :
 			if ( 'yes' === get_option( 'alg_wc_cpg_input_fields_woe_enabled', 'no' ) ) {
 				add_filter( 'woe_get_order_value__alg_wc_cpg_input_fields', array( $this, 'woe_process_input_fields' ), 10, 3 );
 			}
+			add_action( 'wp_enqueue_scripts', array( $this, 'input_scripts' ) );
+			add_action( 'wp_ajax_custom_gateway_upload_file', array( $this, 'wp_ajax_custom_gateway_upload_file_callback' ) );
+			add_action( 'wp_ajax_nopriv_custom_gateway_upload_file', array( $this, 'wp_ajax_custom_gateway_upload_file_callback' ) );
+		}
+
+		/**
+		 * Input scripts.
+		 *
+		 * @version 1.6.0
+		 * @since   1.6.0
+		 */
+		public function input_scripts() {
+			wp_enqueue_script(
+				'alg-wc-custom-payment-gateways-input',
+				alg_wc_custom_payment_gateways()->plugin_url() . '/includes/js/alg-wc-custom-payment-gateways-input.js',
+				array( 'jquery' ),
+				alg_wc_custom_payment_gateways()->version,
+				true
+			);
+
+			wp_localize_script(
+				'alg-wc-custom-payment-gateways-input',
+				'alg_wc_custom_payment_gateways_data',
+				array(
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
+					'nonce'    => wp_create_nonce( 'file_upload_nonce' ),
+				)
+			);
+		}
+
+		/**
+		 * Ajax function for file upload.
+		 *
+		 * @version 1.6.0
+		 * @since   1.6.0
+		 */
+		public function wp_ajax_custom_gateway_upload_file_callback() {
+			check_ajax_referer( 'file_upload_nonce', 'security' );
+
+			if ( ! empty( $_FILES['custom_file'] ) ) {
+				$file_upload_size  = isset( $_POST['file_upload_size'] ) ? floatval( $_POST['file_upload_size'] ) : 2; // MB
+				$file_upload_types = isset( $_POST['file_upload_types'] ) ? explode( ',', $_POST['file_upload_types'] ) : array( 'jpg', 'png', 'pdf' );
+
+				$file_info    = $_FILES['custom_file'];
+				$file_ext     = strtolower( pathinfo( $file_info['name'], PATHINFO_EXTENSION ) );
+				$file_size_mb = $file_info['size'] / ( 1024 * 1024 );
+
+				// Validate file type.
+				if ( ! in_array( $file_ext, array_map( 'trim', $file_upload_types ), true ) ) {
+					wp_send_json_error( array( 'message' => 'Invalid file type. Allowed files type: ' . get_option( 'alg_wc_cpg_upload_allowed_file_types', 'jpg,png,pdf' ) ) );
+				}
+
+				// Validate file size.
+				if ( $file_size_mb > $file_upload_size ) {
+					wp_send_json_error( array( 'message' => 'File size exceeds the allowed limit. Upload file size below ' . $file_upload_size . ' MB' ) );
+				}
+
+				$uploaded = wp_handle_upload( $file_info, array( 'test_form' => false ) );
+				if ( isset( $uploaded['url'] ) ) {
+					wp_send_json_success( array( 'file_url' => $uploaded['url'] ) );
+				} else {
+					wp_send_json_error( array( 'message' => 'Upload failed.' ) );
+				}
+			}
+			wp_send_json_error( array( 'message' => 'No file uploaded.' ) );
 		}
 
 		/**
@@ -54,7 +119,7 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Input_Fields' ) ) :
 			$order_id = $order->get_id();
 			if ( $order_id ) {
 				$input_fields = $order->get_meta( '_alg_wc_cpg_input_fields', true );
-				//$input_fields = get_post_meta( $order_id, '_alg_wc_cpg_input_fields', true );
+				// $input_fields = get_post_meta( $order_id, '_alg_wc_cpg_input_fields', true );
 				if ( is_array( $input_fields ) ) {
 					$template = get_option( 'alg_wc_cpg_input_fields_woe_template', '%title%: %value%' );
 					$glue     = get_option( 'alg_wc_cpg_input_fields_woe_glue', ' | ' );
@@ -83,7 +148,15 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Input_Fields' ) ) :
 		public function get_input_fields_output( $fields, $templates ) {
 			$fields_html = '';
 			foreach ( $fields as $title => $value ) {
-				$fields_html .= str_replace( array( '%title%', '%value%' ), array( $title, wpautop( $value ) ), $templates['item'] );
+				if ( filter_var( $value, FILTER_VALIDATE_URL ) ) {
+					// Get filename from URL.
+					$filename = basename( parse_url( $value, PHP_URL_PATH ) );
+
+					$value = '<a href="' . esc_url( $value ) . '" target="_blank" rel="noopener noreferrer">' . esc_html( $filename ) . '</a>';
+				} else {
+					$value = wpautop( $value );
+				}
+				$fields_html .= str_replace( array( '%title%', '%value%' ), array( $title, $value ), $templates['item'] );
 			}
 			return $templates['start'] . $fields_html . $templates['end'];
 		}
@@ -112,7 +185,7 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Input_Fields' ) ) :
 				return;
 			}
 			$input_fields_meta = $order->get_meta( '_alg_wc_cpg_input_fields', true );
-			//$input_fields_meta = get_post_meta( $order->get_id(), '_alg_wc_cpg_input_fields', true );
+			// $input_fields_meta = get_post_meta( $order->get_id(), '_alg_wc_cpg_input_fields', true );
 			if ( ! empty( $input_fields_meta ) ) {
 				$templates = ( $plain_text ?
 				get_option( 'alg_wc_cpg_input_fields_add_to_emails_template_plain', array() ) :
@@ -143,7 +216,7 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Input_Fields' ) ) :
 				return;
 			}
 			$input_fields_meta = $order->get_meta( '_alg_wc_cpg_input_fields', true );
-			//$input_fields_meta = get_post_meta( $order->get_id(), '_alg_wc_cpg_input_fields', true );
+			// $input_fields_meta = get_post_meta( $order->get_id(), '_alg_wc_cpg_input_fields', true );
 			if ( ! empty( $input_fields_meta ) ) {
 				$templates = get_option( 'alg_wc_cpg_input_fields_add_to_order_details_template', array() );
 				$start     = ( isset( $templates['header'] ) ? $templates['header'] : '<table class="widefat striped"><tbody>' );
@@ -239,7 +312,7 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Input_Fields' ) ) :
 			$input_fields_meta = $order->get_meta( '_alg_wc_cpg_input_fields', true );
 
 			echo $this->get_input_fields_output(
-				//get_post_meta( get_the_ID(), '_alg_wc_cpg_input_fields', true ),
+				// get_post_meta( get_the_ID(), '_alg_wc_cpg_input_fields', true ),
 				$input_fields_meta,
 				array(
 					'start' => '<table class="widefat striped"><tbody>',
@@ -262,14 +335,14 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Input_Fields' ) ) :
 		public function add_input_fields_to_order_meta( $order_id, $posted ) {
 			if ( ! empty( $_POST['payment_method'] ) && isset( $_POST['alg_wc_cpg_input_fields'][ $_POST['payment_method'] ] ) ) {
 				$values = array_map( 'sanitize_textarea_field', $_POST['alg_wc_cpg_input_fields'][ $_POST['payment_method'] ] );
-				$order = wc_get_order( $order_id );
+				$order  = wc_get_order( $order_id );
 				$order->update_meta_data( '_alg_wc_cpg_input_fields', $values );
 				$order->save();
-				//update_post_meta( $order_id, '_alg_wc_cpg_input_fields', $values );
+				// update_post_meta( $order_id, '_alg_wc_cpg_input_fields', $values );
 				if ( 'yes' === get_option( 'alg_wc_cpg_input_fields_add_order_note', 'no' ) ) {
 					$note   = array();
 					$note[] = __( 'Payment gateway input fields', 'custom-payment-gateways-woocommerce' ) . ':';
-					//$order  = wc_get_order( $order_id );
+					// $order  = wc_get_order( $order_id );
 					foreach ( $values as $title => $value ) {
 						$note[] = ( $title . ': ' . $value );
 					}
@@ -278,12 +351,11 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Input_Fields' ) ) :
 			}
 
 			if ( ! empty( $_POST['payment_method'] ) && 'alg_custom_gateway_1' === $_POST['payment_method'] ) {
-				$total_orders = (int)get_option( 'img_cpg_orders', 0 );
-				$total_orders++;
+				$total_orders = (int) get_option( 'img_cpg_orders', 0 );
+				++$total_orders;
 				update_option( 'img_cpg_orders', $total_orders );
 			}
 		}
-
 	}
 
 endif;
