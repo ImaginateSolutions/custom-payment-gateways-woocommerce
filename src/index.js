@@ -13,7 +13,7 @@ const { PAYMENT_STORE_KEY } = window.wc.wcBlocksData;
 [...Array(1)].map((e, i) => {
     const settings = getSetting(`alg_custom_gateway_${i + 1}_data`, {});
     const label = decodeEntities(settings.title);
-    
+
     var newlabels = '';
     var newvalues = '';
     var newobject = [];
@@ -103,18 +103,23 @@ const { PAYMENT_STORE_KEY } = window.wc.wcBlocksData;
 					}
 				}
                
-
-                return {
-                    type: emitResponse.responseTypes.SUCCESS,
-                    meta: {
-                        paymentMethodData: {
-                            customGatewayIS: true,
-                            GatewayISData: newvalues.join(','),
-                            GatewayISNames: newlabels.join(','),
+                if (newlabels && newvalues) {
+                    return {
+                        type: emitResponse.responseTypes.SUCCESS,
+                        meta: {
+                            paymentMethodData: {
+                                customGatewayIS: true,
+                                GatewayISData: newvalues.join(','),
+                                GatewayISNames: newlabels.join(','),
+                            },
                         },
-                    },
-                };
+                    };
+                }
                 
+                return {
+                    type: emitResponse.responseTypes.ERROR,
+                    message: __( 'There was an error.', 'custom-payment-gateways-woocommerce' ),
+                };
             });
             // Unsubscribes when this component is unmounted.
             return () => {
