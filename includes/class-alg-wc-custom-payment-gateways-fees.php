@@ -182,9 +182,9 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Fees' ) ) :
 			$current_gateway_key = false;
 			if ( isset( WC()->session->chosen_payment_method ) ) {
 				$current_gateway_key = WC()->session->chosen_payment_method;
-			} elseif ( ! empty( $_REQUEST['payment_method'] ) ) {
-				$current_gateway_key = sanitize_key( $_REQUEST['payment_method'] );
-			} elseif ( '' != get_option( 'woocommerce_default_gateway' ) ) {
+			} elseif ( ! empty( $_REQUEST['payment_method'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$current_gateway_key = sanitize_key( $_REQUEST['payment_method'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			} elseif ( '' !== get_option( 'woocommerce_default_gateway' ) ) {
 				$current_gateway_key = get_option( 'woocommerce_default_gateway' );
 			}
 			// Get the object.
@@ -199,7 +199,6 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Fees' ) ) :
 			}
 			return $current_gateway;
 		}
-
 	}
 
 endif;

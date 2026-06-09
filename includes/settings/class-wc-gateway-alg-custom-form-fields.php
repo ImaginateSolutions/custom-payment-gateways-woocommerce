@@ -16,27 +16,27 @@ $div_style = 'background-color: #fefefe; padding: 10px; border: 1px solid #d8d8d
 
 $fields = array(
 	'enabled'                => array(
-		'title'   => __( 'Enable/Disable', 'woocommerce' ),
+		'title'   => __( 'Enable/Disable', 'custom-payment-gateways-woocommerce' ),
 		'type'    => 'checkbox',
 		'label'   => __( 'Enable custom gateway', 'custom-payment-gateways-woocommerce' ),
 		'default' => 'no',
 	),
 	'title'                  => array(
-		'title'       => __( 'Title', 'woocommerce' ),
+		'title'       => __( 'Title', 'custom-payment-gateways-woocommerce' ),
 		'type'        => 'text',
-		'description' => __( 'This controls the title which the user sees during checkout.', 'woocommerce' ),
+		'description' => __( 'This controls the title which the user sees during checkout.', 'custom-payment-gateways-woocommerce' ),
 		'default'     => __( 'Custom Payment Gateway', 'custom-payment-gateways-woocommerce' ),
 		'desc_tip'    => true,
 	),
 	'description'            => array(
-		'title'       => __( 'Description', 'woocommerce' ),
+		'title'       => __( 'Description', 'custom-payment-gateways-woocommerce' ),
 		'type'        => 'textarea',
-		'description' => __( 'Payment method description that the customer will see on your checkout.', 'woocommerce' ),
+		'description' => __( 'Payment method description that the customer will see on your checkout.', 'custom-payment-gateways-woocommerce' ),
 		'default'     => __( 'Custom Payment Gateway Description.', 'custom-payment-gateways-woocommerce' ),
 		'desc_tip'    => true,
 	),
 	'instructions'           => array(
-		'title'       => __( 'Instructions', 'woocommerce' ),
+		'title'       => __( 'Instructions', 'custom-payment-gateways-woocommerce' ),
 		'type'        => 'textarea',
 		'description' => __( 'Instructions that will be added to the thank you page.', 'custom-payment-gateways-woocommerce' ),
 		'default'     => '',
@@ -90,17 +90,17 @@ $fields = array(
 		'custom_attributes' => apply_filters( 'alg_wc_custom_payment_gateways_settings', array( 'disabled' => 'disabled' ), 'array_max_amount' ),
 	),
 	'enable_for_methods'     => array(
-		'title'             => __( 'Enable for shipping methods', 'woocommerce' ),
+		'title'             => __( 'Enable for shipping methods', 'custom-payment-gateways-woocommerce' ),
 		'type'              => 'multiselect',
 		'class'             => 'chosen_select',
 		'default'           => '',
 		'description'       => __( 'If gateway is only available for certain shipping methods, set it up here. Leave blank to enable for all methods.', 'custom-payment-gateways-woocommerce' ),
 		'options'           => $shipping_methods,
 		'desc_tip'          => true,
-		'custom_attributes' => array( 'data-placeholder' => __( 'Select shipping methods', 'woocommerce' ) ),
+		'custom_attributes' => array( 'data-placeholder' => __( 'Select shipping methods', 'custom-payment-gateways-woocommerce' ) ),
 	),
 	'enable_for_virtual'     => array(
-		'title'       => __( 'Accept for virtual orders', 'woocommerce' ),
+		'title'       => __( 'Accept for virtual orders', 'custom-payment-gateways-woocommerce' ),
 		'label'       => __( 'Accept', 'custom-payment-gateways-woocommerce' ),
 		'description' => __( 'Accept gateway if the order is virtual.', 'custom-payment-gateways-woocommerce' ),
 		'type'        => 'checkbox',
@@ -187,7 +187,7 @@ if ( 'yes' === get_option( 'alg_wc_cpg_fees_enabled', 'yes' ) ) {
 			),
 		)
 	);
-	for ( $i = 1; $i <= apply_filters( 'alg_wc_custom_payment_gateways_values', 1, 'total_fees', $this ); $i++ ) { // phpcs:ignore
+	for ( $i = 1; $i <= apply_filters( 'alg_wc_custom_payment_gateways_values', 1, 'total_fees', $this ); $i++ ) {
 		$fields = array_merge(
 			$fields,
 			array(
@@ -316,7 +316,7 @@ if ( 'yes' === get_option( 'alg_wc_cpg_input_fields_enabled', 'yes' ) ) {
 			),
 		)
 	);
-	for ( $i = 1; $i <= apply_filters( 'alg_wc_custom_payment_gateways_values', 1, 'total_input_fields', $this ); $i++ ) { // phpcs:ignore
+	for ( $i = 1; $i <= apply_filters( 'alg_wc_custom_payment_gateways_values', 1, 'total_input_fields', $this ); $i++ ) {
 		$fields = array_merge(
 			$fields,
 			array(

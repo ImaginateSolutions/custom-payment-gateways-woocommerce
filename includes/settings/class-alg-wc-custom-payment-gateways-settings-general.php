@@ -19,8 +19,18 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Settings_General' ) ) :
 	 */
 	class Alg_WC_Custom_Payment_Gateways_Settings_General extends Alg_WC_Custom_Payment_Gateways_Settings_Section {
 
+		/**
+		 * Section ID.
+		 *
+		 * @var string
+		 */
 		public $id = '';
 
+		/**
+		 * Section description.
+		 *
+		 * @var string
+		 */
 		public $desc = '';
 
 		/**
@@ -81,14 +91,14 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Settings_General' ) ) :
 					'custom_attributes' => apply_filters( 'alg_wc_custom_payment_gateways_settings', array( 'readonly' => 'readonly' ), 'array' ),
 				),
 			);
-			for ( $i = 1; $i <= apply_filters( 'alg_wc_custom_payment_gateways_values', 1, 'total_gateways' ); $i++ ) { // phpcs:ignore
+			for ( $i = 1; $i <= apply_filters( 'alg_wc_custom_payment_gateways_values', 1, 'total_gateways' ); $i++ ) {
 				$settings[] = array(
 					'title'   => __( 'Admin title for Custom Gateway', 'custom-payment-gateways-woocommerce' ) . ' #' . $i,
 					'id'      => 'alg_wc_custom_payment_gateways_admin_title_' . $i,
 					'default' => __( 'Custom Gateway', 'custom-payment-gateways-woocommerce' ) . ' #' . $i,
 					'type'    => 'text',
 					'desc'    => '<a class="button" href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=alg_custom_gateway_' . $i ) . '" target="_blank">' .
-						__( 'Settings', 'woocommerce' ) . '</a>',
+						__( 'Settings', 'custom-payment-gateways-woocommerce' ) . '</a>',
 				);
 			}
 			$settings = array_merge(
@@ -102,7 +112,6 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Settings_General' ) ) :
 			);
 			return $settings;
 		}
-
 	}
 
 endif;

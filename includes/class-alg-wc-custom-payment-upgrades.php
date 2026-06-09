@@ -2,7 +2,7 @@
 /**
  * Custom Payment Gateways for WooCommerce - Upgrade options class
  *
- * @version 2.1.0
+ * @version 2.2.0
  * @since   2.1.0
  * @author  Imaginate Solutions
  * @package cpgw
@@ -22,7 +22,7 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Upgrades' ) ) :
 		/**
 		 * Constructor.
 		 *
-		 * @version 2.1.0
+		 * @version 2.2.0
 		 * @since   2.1.0
 		 */
 		public function __construct() {
@@ -35,9 +35,15 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Upgrades' ) ) :
 			add_action( 'alg_cpg_upgrade_content', array( $this, 'show_content' ) );
 		}
 
+		/**
+		 * Save options on admin init.
+		 *
+		 * @version 2.2.0
+		 * @since   2.1.0
+		 */
 		public function save_options() {
 			if ( ! get_option( 'img_cpg_install_date' ) ) {
-				update_option( 'img_cpg_install_date', current_time( 'timestamp' ) );
+				update_option( 'img_cpg_install_date', time() );
 			}
 
 			if ( ! get_option( 'img_cpg_orders' ) ) {
@@ -45,13 +51,20 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Upgrades' ) ) :
 			}
 		}
 
+		/**
+		 * Show review notice.
+		 *
+		 * @version 2.2.0
+		 * @since   2.1.0
+		 */
 		public function show_review_notice() {
 			if ( ! current_user_can( 'manage_options' ) ) {
 				return;
 			}
 
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			if ( isset( $_GET['page'] ) && ( 'wc-orders' === $_GET['page'] || 'wc-settings' === $_GET['page'] ) ) {
-				// Skip if already dismissed
+				// Skip if already dismissed.
 				if ( get_option( 'cpgw_review_notice_dismissed' ) ) {
 					return;
 				}
@@ -76,7 +89,7 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Upgrades' ) ) :
 						$(document).on('click', '.cpgw-review-notice .notice-dismiss', function() {
 							$.post(ajaxurl, {
 								action: 'cpgw_dismiss_review_notice',
-								_nonce: '<?php echo esc_js($nonce); ?>'
+								_nonce: '<?php echo esc_js( $nonce ); ?>'
 							});
 						});
 					})(jQuery);
@@ -86,8 +99,15 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Upgrades' ) ) :
 			}
 		}
 
+		/**
+		 * AJAX handler to dismiss the review notice.
+		 *
+		 * @version 2.2.0
+		 * @since   2.1.0
+		 */
 		public function cpgw_dismiss_review_notice() {
-			if ( ! isset( $_POST['_nonce'] ) || ! wp_verify_nonce( $_POST['_nonce'], 'cpgw_dismiss_notice_nonce' ) ) {
+
+			if ( ! isset( $_POST['_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_nonce'] ) ), 'cpgw_dismiss_notice_nonce' ) ) {
 				wp_send_json_error( 'Invalid nonce', 403 );
 			}
 
@@ -99,6 +119,12 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Upgrades' ) ) :
 			wp_send_json_success( 'Notice dismissed' );
 		}
 
+		/**
+		 * Show upgrade content.
+		 *
+		 * @version 2.2.0
+		 * @since   2.1.0
+		 */
 		public function show_content() {
 			?>
 			<div class="cpgw-upgrade-page">
@@ -167,15 +193,15 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Upgrades' ) ) :
 						array(
 							'name' => 'Variations Radio Buttons for WooCommerce',
 							'desc' => 'Replace the standard WooCommerce Variable Products drop down box template with radio buttons.',
-							'link' => 'https://imaginate-solutions.com/downloads/variations-radio-buttons-for-woocommerce/?utm_source=cpgupgrade&utm_medium=litepage&utm_campaign=litevspro'
+							'link' => 'https://imaginate-solutions.com/downloads/variations-radio-buttons-for-woocommerce/?utm_source=cpgupgrade&utm_medium=litepage&utm_campaign=litevspro',
 						),
 					);
 
-					foreach ($plugins as $plugin) {
+					foreach ( $plugins as $plugin ) {
 						echo '<div class="cpgw-plugin-card">';
-						echo '<h4>' . esc_html($plugin['name']) . '</h4>';
-						echo '<p>' . esc_html($plugin['desc']) . '</p>';
-						echo '<a href="' . esc_url($plugin['link']) . '" target="_blank">View Plugin →</a>';
+						echo '<h4>' . esc_html( $plugin['name'] ) . '</h4>';
+						echo '<p>' . esc_html( $plugin['desc'] ) . '</p>';
+						echo '<a href="' . esc_url( $plugin['link'] ) . '" target="_blank">View Plugin →</a>';
 						echo '</div>';
 					}
 					?>
@@ -233,7 +259,6 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Upgrades' ) ) :
 			</style>
 			<?php
 		}
-
 	}
 
 endif;
