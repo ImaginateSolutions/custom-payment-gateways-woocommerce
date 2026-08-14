@@ -19,8 +19,18 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Settings_General' ) ) :
 	 */
 	class Alg_WC_Custom_Payment_Gateways_Settings_General extends Alg_WC_Custom_Payment_Gateways_Settings_Section {
 
+		/**
+		 * Section ID.
+		 *
+		 * @var string
+		 */
 		public $id = '';
 
+		/**
+		 * Section description.
+		 *
+		 * @var string
+		 */
 		public $desc = '';
 
 		/**
@@ -88,7 +98,7 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Settings_General' ) ) :
 					'default' => __( 'Custom Gateway', 'custom-payment-gateways-woocommerce' ) . ' #' . $i,
 					'type'    => 'text',
 					'desc'    => '<a class="button" href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=alg_custom_gateway_' . $i ) . '" target="_blank">' .
-						__( 'Settings', 'woocommerce' ) . '</a>',
+						__( 'Settings', 'custom-payment-gateways-woocommerce' ) . '</a>',
 				);
 			}
 			$settings = array_merge(
@@ -102,7 +112,6 @@ if ( ! class_exists( 'Alg_WC_Custom_Payment_Gateways_Settings_General' ) ) :
 			);
 			return $settings;
 		}
-
 	}
 
 endif;
